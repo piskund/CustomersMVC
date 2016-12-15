@@ -1,4 +1,4 @@
-﻿namespace Customers.Core.Entities
+﻿namespace CustomersMVC.Models
 {
     public class CustomerRole
     {

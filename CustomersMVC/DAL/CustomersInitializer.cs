@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
-using Customers.Core.Entities;
-using Customers.DAL.Contexts;
+using CustomersMVC.Models;
 
-namespace Customers.DAL
+namespace CustomersMVC.DAL
 {
     internal class CustomersInitializer : DropCreateDatabaseIfModelChanges<CustomerContext>
     {

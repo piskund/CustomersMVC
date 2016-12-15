@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
-using Customers.Core.Entities;
+using CustomersMVC.Models;
 
-namespace Customers.DAL.Contexts
+namespace CustomersMVC.DAL
 {
     public class CustomerContext : DbContext
     {
