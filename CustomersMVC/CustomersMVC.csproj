@@ -171,7 +171,6 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="CustomersInitializer.cs" />
     <Compile Include="DAL\CustomerContext.cs" />
     <Compile Include="DAL\CustomersInitializer.cs" />
     <Compile Include="Global.asax.cs">
