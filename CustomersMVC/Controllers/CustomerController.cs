@@ -43,7 +43,7 @@ namespace CustomersMVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,FirstName,LastName,Email,PhoneNumner,Login,Password,IsDisabled")] Customer customer)
+        public async Task<ActionResult> Create([Bind(Include = "ID,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -75,7 +75,7 @@ namespace CustomersMVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,FirstName,LastName,Email,PhoneNumner,Login,Password,IsDisabled")] Customer customer)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
         {
             if (ModelState.IsValid)
             {

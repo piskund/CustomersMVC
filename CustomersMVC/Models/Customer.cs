@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace CustomersMVC.Models
 {
-    public class Customer
+    public class Customer 
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         public string FirstName { get; set; }
 
@@ -12,7 +13,7 @@ namespace CustomersMVC.Models
 
         public string Email { get; set; }
 
-        public string PhoneNumner { get; set; }
+        public string PhoneNumber { get; set; }
 
         public string Login { get; set; }
 
