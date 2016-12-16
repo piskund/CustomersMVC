@@ -8,7 +8,7 @@ namespace CustomersMVC.DAL
 {
     internal class CustomersInitializer : DropCreateDatabaseAlways<CustomerContext>
     {
-        protected override void Seed(CustomerContext context)
+        protected override async void Seed(CustomerContext context)
         {
             var customers = new List<Customer>
             {
@@ -31,7 +31,9 @@ namespace CustomersMVC.DAL
                 new Role {Name = "Operator"},
                 new Role {Name = "Manager"}
             };
-
+            context.Roles.AddRange(roles);
+            await context.SaveChangesAsync();
+            
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
             foreach (var role in roles)
@@ -39,7 +41,7 @@ namespace CustomersMVC.DAL
                 var identityRole = new IdentityRole { Name = role.Name };
                 roleManager.Create(identityRole);
             }
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(context));
 
@@ -53,10 +55,10 @@ namespace CustomersMVC.DAL
                     userManager.AddToRole(appUser.Id, "Customer");
                 }
             }
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             customers.ForEach(s => context.Customers.Add(s));
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }
