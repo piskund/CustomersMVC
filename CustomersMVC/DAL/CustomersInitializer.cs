@@ -5,21 +5,22 @@ using CustomersMVC.Models;
 namespace CustomersMVC.DAL
 {
     internal class CustomersInitializer : DropCreateDatabaseIfModelChanges<CustomerContext>
+        //DropCreateDatabaseAlways
     {
         protected override void Seed(CustomerContext context)
         {
             var customerEntities = new List<Customer>
             {
-                new Customer {FirstName = "John", LastName = "Smith"},
-                new Customer {FirstName = "Jane", LastName = "Wesson"},
-                new Customer {FirstName = "John", LastName = "Doe"},
-                new Customer {FirstName = "Jane", LastName = "Doe"},
-                new Customer {FirstName = "Jack", LastName = "Black"},
-                new Customer {FirstName = "Peggy", LastName = "Pink"},
-                new Customer {FirstName = "Laura", LastName = "White"},
-                new Customer {FirstName = "Dorian", LastName = "Grey"},
-                new Customer {FirstName = "Yan", LastName = "Brown"},
-                new Customer {FirstName = "Ned", LastName = "Red"}
+                new Customer {FirstName = "John", LastName = "Smith", Email = "john.smith@fake.com"},
+                new Customer {FirstName = "Jane", LastName = "Wesson", Email = "jane.wesson@fake.com"},
+                new Customer {FirstName = "John", LastName = "Doe", Email = "john.doe@fake.com"},
+                new Customer {FirstName = "Jane", LastName = "Doe", Email = "jane.doe@fake.com"},
+                new Customer {FirstName = "Jack", LastName = "Black", Email = "jack.black@fake.com"},
+                new Customer {FirstName = "Peggy", LastName = "Pink", Email = "peggy.black@fake.com"},
+                new Customer {FirstName = "Laura", LastName = "White", Email = "laura.white@fake.com"},
+                new Customer {FirstName = "Dorian", LastName = "Grey", Email = "dorian.grey@fake.com"},
+                new Customer {FirstName = "Yan", LastName = "Brown", Email = "yan.brown@fake.com"},
+                new Customer {FirstName = "Ned", LastName = "Red", Email = "ned.red@fake.com"}
             };
             customerEntities.ForEach(s => context.Customers.Add(s));
             context.SaveChanges();
