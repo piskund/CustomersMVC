@@ -29,7 +29,7 @@ namespace Customers.Web.Controllers
                     var membershipUser = Membership.GetUser(model.Login);
                     if (membershipUser != null && membershipUser.IsApproved)
                     {
-                        FormsAuthentication.SetAuthCookie(model.Login, false);
+                        FormsAuthentication.SetAuthCookie(model.Login, true);
                         if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                             && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                         {
@@ -37,7 +37,7 @@ namespace Customers.Web.Controllers
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Customers");
                         }
                     }
                     else
@@ -62,7 +62,7 @@ namespace Customers.Web.Controllers
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Customers");
         }
     }
 }

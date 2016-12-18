@@ -1,0 +1,10 @@
+﻿@using (Html.BeginForm("Index", "Customers", FormMethod.Get, new {id = "searchForm", @class = "navbar-right"}))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-actions no-color">
+        <p>
+            Search: <input type="text" name="SearchString" value="@ViewData["currentFilter"]"/>
+            <input type="submit" value="Search" class="btn btn-default"/>
+        </p>
+    </div>
+}

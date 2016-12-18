@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Customers.Web.DAL;
 using Customers.Web.Models;
@@ -12,12 +13,60 @@ namespace Customers.Web.Controllers
         private readonly CustomerContext _db = new CustomerContext();
 
         // GET: Customers
-        public ActionResult Index()
+        [Authorize(Roles = RoleNames.AllowedToRead)]
+        public async Task<ActionResult> Index(string sortOrder, 
+            string currentFilter,
+            string searchString,
+            int? page)
         {
-            return View(_db.Customers.ToList());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : string.Empty;
+            ViewData["FirstNameSortParm"] = sortOrder == "firstname_desc" ? "firstname" : "firstname_desc";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var customers = _db.Customers.Select(c => c);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                customers = customers.Where(c => c.LastName.Contains(searchString)
+                                       || c.FirstName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "lastname":
+                    customers = customers.OrderBy(s => s.LastName);
+                    break;
+                case "lastname_desc":
+                    customers = customers.OrderByDescending(s => s.LastName);
+                    break;
+                case "firstname":
+                    customers = customers.OrderBy(s => s.FirstName);
+                    break;
+                case "firstname_desc":
+                    customers = customers.OrderByDescending(s => s.FirstName);
+                    break;
+                default:
+                    customers = customers.OrderBy(s => s.LastName);
+                    break;
+            }
+
+            int pageSize = 4;
+            return View(await PagedList<Customer>.CreateAsync(customers.AsNoTracking(), page ?? 1, pageSize));
         }
 
         // GET: Customers/Details/5
+        [Authorize(Roles = RoleNames.AllowedToRead)]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -33,6 +82,7 @@ namespace Customers.Web.Controllers
         }
 
         // GET: Customers/Create
+        [Authorize(Roles = RoleNames.AllowedToModify)]
         public ActionResult Create()
         {
             return View();
@@ -43,6 +93,7 @@ namespace Customers.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.AllowedToModify)]
         public ActionResult Create([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
         {
             if (ModelState.IsValid)
@@ -56,6 +107,7 @@ namespace Customers.Web.Controllers
         }
 
         // GET: Customers/Edit/5
+        [Authorize(Roles = RoleNames.AllowedToModify)]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -75,6 +127,7 @@ namespace Customers.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.AllowedToModify)]
         public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
         {
             if (ModelState.IsValid)
@@ -87,6 +140,7 @@ namespace Customers.Web.Controllers
         }
 
         // GET: Customers/Delete/5
+        [Authorize(Roles = RoleNames.AllowedToModify)]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -104,6 +158,7 @@ namespace Customers.Web.Controllers
         // POST: Customers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.AllowedToModify)]
         public ActionResult DeleteConfirmed(int id)
         {
             Customer customer = _db.Customers.Find(id);

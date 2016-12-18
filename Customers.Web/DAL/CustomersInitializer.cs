@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -15,6 +14,12 @@ namespace Customers.Web.DAL
         // DropCreateDatabaseAlways
         protected override void Seed(CustomerContext context)
         {
+            if (context.Customers.Any())
+            {
+                // DB has been already seeded.
+                return;
+            }
+
             // Fill initial values of customers with fake data.
             var customers = new List<Customer>
             {
