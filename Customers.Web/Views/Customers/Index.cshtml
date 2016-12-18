@@ -7,41 +7,52 @@
 @if (Request.IsAuthenticated && (User.IsInRole(RoleNames.Administrator) || User.IsInRole(RoleNames.Manager)))
 {
     <p>
-        @Html.ActionLink("Create New", "Create")
+        @Html.ActionLink("Create customer", "Create", "Customers", new { @class = "btn btn-default" })
     </p>
 }
 
+@Html.LabelFor(model => model.Stats)
+@Html.DisplayFor(model => model.Stats)
+
 @Html.Partial("_SearchPartial")
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages
 
     <table class="table">
         <tr>
             <th>
-                @Html.ActionLink("First name", "Index", "Customers", new { sortOrder = ViewBag.FirstNameSortParm }, new { sortOrder = ViewBag.FirstNameSortParm })
+                Login
+            </th>            
+            <th>
+                @Html.ActionLink("First name", "Index", "Customers", new {sortOrder = ViewBag.FirstNameSortParm}, new {sortOrder = ViewBag.FirstNameSortParm})
             </th>
             <th>
-                @Html.ActionLink("Last name", "Index", "Customers", new { sortOrder = ViewBag.LastNameSortParm }, new { sortOrder = ViewBag.LastNameSortParm })
+                @Html.ActionLink("Last name", "Index", "Customers", new {sortOrder = ViewBag.LastNameSortParm}, new {sortOrder = ViewBag.LastNameSortParm})
             </th>
             <th>
                 Email
             </th>
             <th>
-                Phone number
+                Phone
             </th>
             <th>
-                Login
+                Active
             </th>
             <th>
-                Password
+                Edit/Delete
             </th>
-            <th>
-                Is Disabled
-            </th>
-            <th></th>
         </tr>
 
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Login)
+                </td>                
                 <td>
                     @Html.DisplayFor(modelItem => item.FirstName)
                 </td>
@@ -55,41 +66,38 @@
                     @Html.DisplayFor(modelItem => item.PhoneNumber)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Login)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Password)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.IsDisabled)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
+                    @Html.ActionLink("Delete", "Delete", new {id = item.Id})
                 </td>
             </tr>
         }
+        <tr>
+            <td colspan="6">
+            </td>
+            <td>
+                @Html.ActionLink("Prev", "Index", "Customers",
+                    new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {prevDisabled} btn"},
+                    new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {prevDisabled} btn"})
+
+            </td>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                var isDisabled = Model.PageIndex == i ? "disabled" : "";
+                <td>
+                    @Html.ActionLink(i.ToString(), "Index", "Customers",
+                        new {sortOrder = ViewBag.CurrentSort, page = i, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {isDisabled} btn"},
+                        new {sortOrder = ViewBag.CurrentSort, page = i, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {isDisabled} btn"})
+                </td>
+            }
+            <td>
+                @Html.ActionLink("Next", "Index", "Customers",
+                    new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {nextDisabled} btn"},
+                    new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {nextDisabled} btn"})
+            </td>
+        </tr>
     </table>
 
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
 
-<div class="row">
-    <div class="col-md-4">
-        <p>
-            @Html.ActionLink("Previous", "Index", "Customers",
-             new { sortOrder = ViewBag.CurrentSort , page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {prevDisabled} btn" },
-             new { sortOrder = ViewBag.CurrentSort, page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {prevDisabled} btn" } )
-        </p>
-    </div>
-    <div class="col-md-4">
-        <p>
-            @Html.ActionLink("Next", "Index", "Customers",
-             new { sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {nextDisabled} btn" },
-             new { sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter, @class = $"btn btn-default {nextDisabled} btn" })
-        </p>
-    </div>
-</div>

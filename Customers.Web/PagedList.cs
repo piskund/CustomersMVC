@@ -10,11 +10,13 @@ namespace Customers.Web
     {
         public int PageIndex { get; }
         public int TotalPages { get; }
+        public int Stats { get; }
 
         public PagedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            Stats = count;
 
             this.AddRange(items);
         }
