@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Configuration;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -61,7 +62,13 @@ namespace Customers.Web.Controllers
                     break;
             }
 
-            int pageSize = 4;
+            var pageSizeFromConfig = ConfigurationManager.AppSettings["GridPageSize"];
+            int pageSize;
+            if (!int.TryParse(pageSizeFromConfig, out pageSize))
+            {
+                // Just give it some default vaue if the config is corrupted.
+                pageSize = 5;
+            }
             return View(await PagedList<Customer>.CreateAsync(customers.AsNoTracking(), page ?? 1, pageSize));
         }
 
