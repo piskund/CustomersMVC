@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -34,10 +35,23 @@ namespace Customers.Web.DAL
                 new Customer {FirstName = "Yan", LastName = "Brown", Email = "yan.brown@fake.com", Login = "yabro"},
                 new Customer {FirstName = "Ned", LastName = "Red", Email = "ned.red@fake.com", Login = "nerd"}
             };
+            for (int i = 0; i < 200; i++)
+            {
+                var randomString = Guid.NewGuid().ToString("N");
+                var customer = new Customer()
+                {
+                    FirstName = randomString.Substring(0, 5),
+                    LastName = randomString.Substring(5, 7),
+                    Login = randomString.Substring(12, 6),
+                    Email = randomString.Substring(0, 12) + "@fake.com"
+                };
+                customers.Add(customer);
+            }
+
             int phoneNumber = 223322000;
             customers.ForEach(c => c.Password = $"{c.FirstName}{c.LastName}");
             customers.ForEach(c => c.PhoneNumber = phoneNumber++.ToString() );
-            customers.ForEach(c => c.IsDisabled = c.Login.Contains("r"));
+            customers.ForEach(c => c.IsDisabled = c.Login.Contains("d"));
 
             // Create customer as application user.
             customers.ForEach(c => Membership.CreateUser(c.Login, c.Password, c.Email));

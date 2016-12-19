@@ -43,7 +43,7 @@ namespace Customers.Web.Controllers
             {
                 customers = customers.Where(c => c.FullName.Contains(searchString));
             }
-
+            
             switch (sortOrder)
             {
                 case "name":
@@ -83,7 +83,15 @@ namespace Customers.Web.Controllers
                 // Just give it some default vaue if the config is corrupted.
                 pageSize = 5;
             }
-            return View(new PagedList<Customer>(customers.ToList(), customers.Count(), page ?? 1, pageSize));
+
+            var model = new PagedList<Customer>(customers.ToList(), customers.Count(), page ?? 1, pageSize);
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_CustomersPartial", model);
+            }
+
+            return View(model);
         }
 
         // GET: Customers/Details/5

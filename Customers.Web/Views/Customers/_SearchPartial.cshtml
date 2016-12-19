@@ -1,10 +1,13 @@
-﻿@using (Html.BeginForm("Index", "Customers", FormMethod.Get, new {id = "searchForm", @class = "navbar-right"}))
+﻿@using (Ajax.BeginForm(
+    new AjaxOptions()
+    {
+        HttpMethod = "get",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "customersList"
+    }))
 {
-    @Html.AntiForgeryToken()
-    <div class="form-actions no-color">
         <p>
-            Search: <input type="text" name="SearchString" value="@ViewData["currentFilter"]"/>
+            Search: <input type="text" name="searchString" value="@ViewData["currentFilter"]"/>
             <input type="submit" value="Search" class="btn btn-default"/>
         </p>
-    </div>
 }
