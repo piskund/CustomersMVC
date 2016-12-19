@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Customers.Web.DAL;
 using Customers.Web.Models;
+using System.Collections.Generic;
 
 namespace Customers.Web.Controllers
 {
@@ -15,14 +16,16 @@ namespace Customers.Web.Controllers
 
         // GET: Customers
         [Authorize(Roles = RoleNames.AllowedToRead)]
-        public async Task<ActionResult> Index(string sortOrder, 
+        public ActionResult Index(string sortOrder, 
             string currentFilter,
             string searchString,
             int? page)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : string.Empty;
-            ViewData["FirstNameSortParm"] = sortOrder == "firstname_desc" ? "firstname" : "firstname_desc";
+            ViewData["LoginSortParm"] = sortOrder == "login_desc" ? "login" : "login_desc";
+            ViewData["NameSortParm"] =  sortOrder == "name_desc" ? "name" : "name_desc";
+            ViewData["EmailSortParm"] = sortOrder == "email_desc" ? "email" : "email_desc";
+            ViewData["PhoneSortParm"] = sortOrder == "phone_desc" ? "phone" : "phone_desc";
 
             if (searchString != null)
             {
@@ -35,30 +38,41 @@ namespace Customers.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var customers = _db.Customers.Select(c => c);
-
+            IEnumerable<Customer> customers = _db.Customers.Select(c => c).AsEnumerable();
             if (!string.IsNullOrEmpty(searchString))
             {
-                customers = customers.Where(c => c.LastName.Contains(searchString)
-                                       || c.FirstName.Contains(searchString));
+                customers = customers.Where(c => c.FullName.Contains(searchString));
             }
 
             switch (sortOrder)
             {
-                case "lastname":
-                    customers = customers.OrderBy(s => s.LastName);
+                case "name":
+                    customers = customers.OrderBy(c => c.FullName);
                     break;
-                case "lastname_desc":
-                    customers = customers.OrderByDescending(s => s.LastName);
+                case "name_desc":
+                    customers = customers.OrderByDescending(c => c.FullName);
                     break;
-                case "firstname":
-                    customers = customers.OrderBy(s => s.FirstName);
+                case "login":
+                    customers = customers.OrderBy(c => c.Login);
                     break;
-                case "firstname_desc":
-                    customers = customers.OrderByDescending(s => s.FirstName);
+                case "login_desc":
+                    customers = customers.OrderByDescending(c => c.Login);
                     break;
+                case "email":
+                    customers = customers.OrderBy(c => c.Email);
+                    break;
+                case "email_desc":
+                    customers = customers.OrderByDescending(c => c.Email);
+                    break;
+                case "phone":
+                    customers = customers.OrderBy(c => c.PhoneNumber);
+                    break;
+                case "phone_desc":
+                    customers = customers.OrderByDescending(c => c.PhoneNumber);
+                    break;
+
                 default:
-                    customers = customers.OrderBy(s => s.LastName);
+                    customers = customers.OrderBy(c => c.FullName);
                     break;
             }
 
@@ -69,18 +83,18 @@ namespace Customers.Web.Controllers
                 // Just give it some default vaue if the config is corrupted.
                 pageSize = 5;
             }
-            return View(await PagedList<Customer>.CreateAsync(customers.AsNoTracking(), page ?? 1, pageSize));
+            return View(new PagedList<Customer>(customers.ToList(), customers.Count(), page ?? 1, pageSize));
         }
 
         // GET: Customers/Details/5
         [Authorize(Roles = RoleNames.AllowedToRead)]
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = _db.Customers.Find(id);
+            Customer customer = await _db.Customers.FindAsync(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -101,12 +115,12 @@ namespace Customers.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
+        public async Task<ActionResult> Create([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
         {
             if (ModelState.IsValid)
             {
                 _db.Customers.Add(customer);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
@@ -115,13 +129,13 @@ namespace Customers.Web.Controllers
 
         // GET: Customers/Edit/5
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public ActionResult Edit(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = _db.Customers.Find(id);
+            Customer customer = await _db.Customers.FindAsync(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -135,12 +149,12 @@ namespace Customers.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
         {
             if (ModelState.IsValid)
             {
                 _db.Entry(customer).State = EntityState.Modified;
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(customer);
@@ -148,13 +162,13 @@ namespace Customers.Web.Controllers
 
         // GET: Customers/Delete/5
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = _db.Customers.Find(id);
+            Customer customer = await _db.Customers.FindAsync(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -166,11 +180,11 @@ namespace Customers.Web.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
             Customer customer = _db.Customers.Find(id);
             _db.Customers.Remove(customer);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 

@@ -11,6 +11,7 @@ namespace Customers.Web
         public int PageIndex { get; }
         public int TotalPages { get; }
         public int Stats { get; }
+        public bool SelectAll { get; set; }
 
         public PagedList(List<T> items, int count, int pageIndex, int pageSize)
         {

@@ -141,6 +141,7 @@
     </Compile>
     <Compile Include="Helpers\HashedPasswordExtension.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Customer.NotMapped.cs" />
     <Compile Include="Models\CustomerInRole.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\Role.cs" />
