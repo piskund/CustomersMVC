@@ -1,18 +1,14 @@
 ﻿@using Customers.Web.Models
 @model PagedList<Customer>
-
 <div id="customersList">
+    @Scripts.Render("~/scripts/jquery.custom.js")
+
     <div class="stats">
         @Html.LabelFor(model => model.Stats)
         @Html.DisplayFor(model => model.Stats)
     </div>
-
+    
     @Html.Partial("_PagerPartial", Model)
-
-    @Scripts.Render("~/scripts/jquery.custom.js")
-    
-    
-    <a id="selectAllLink" href="">Select All</a>   
 
     <table class="table">
         <tr>
@@ -104,7 +100,7 @@
             </tr>
         }
     </table>
-    
+
     @Html.Partial("_PagerPartial", Model)
     
     Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages

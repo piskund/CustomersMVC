@@ -1,68 +1,63 @@
-﻿@using Customers.Web.Models
-@model PagedList<Customer>
+﻿@model PagedList<Customers.Web.Models.Customer>
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<ul class="pager">
-    <li>
-        @Ajax.ActionLink("Prev",
-                "Index",
-                new { sortOrder = ViewBag.CurrentSort, page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter },
-                new AjaxOptions
-                {
-                    UpdateTargetId = "customersList",
-                    InsertionMode = InsertionMode.Replace,
-                    HttpMethod = "GET"
-                },
-                new { @class = $"btn btn-default {prevDisabled} btn" })
-    </li>
-    @for (int i = 1; i <= Model.NumberOfPagerButtons; i++)
+<div class="row">
+    <a class="selectAllLink" href="#">Select All</a>
+
+    @Ajax.ActionLink("Prev",
+        "Index",
+        new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter},
+        new AjaxOptions
+        {
+            UpdateTargetId = "customersList",
+            InsertionMode = InsertionMode.Replace,
+            HttpMethod = "GET"
+        },
+        new {@class = $"btn btn-default {prevDisabled} btn"})
+
+    @for (var i = 1; i <= Model.NumberOfPagerButtons; i++)
     {
         var isDisabled = Model.PageIndex == i ? "disabled" : "";
-        <li>
-            @Ajax.ActionLink(i.ToString(),
-                "Index",
-                new {sortOrder = ViewBag.CurrentSort, page = i, currentFilter = ViewBag.CurrentFilter},
-                new AjaxOptions
-                {
-                    UpdateTargetId = "customersList",
-                    InsertionMode = InsertionMode.Replace,
-                    HttpMethod = "GET"
-                },
-                new {@class = $"btn btn-defaul {isDisabled} btn"})
-        </li>
+        @Ajax.ActionLink(i.ToString(),
+            "Index",
+            new {sortOrder = ViewBag.CurrentSort, page = i, currentFilter = ViewBag.CurrentFilter},
+            new AjaxOptions
+            {
+                UpdateTargetId = "customersList",
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "GET"
+            },
+            new {@class = $"btn btn-defaul {isDisabled} btn"})
     }
+
     @if (Model.IsDotsNeeded)
     {
-        <li>
-            ...
-        </li>
-        <li>
-            @Ajax.ActionLink(Model.TotalPages.ToString(),
-                "Index",
-                new {sortOrder = ViewBag.CurrentSort, page = Model.TotalPages, currentFilter = ViewBag.CurrentFilter},
-                new AjaxOptions
-                {
-                    UpdateTargetId = "customersList",
-                    InsertionMode = InsertionMode.Replace,
-                    HttpMethod = "GET"
-                },
-                new {@class = $"btn btn-defaul {nextDisabled} btn"})
-        </li>
+        Html.DisplayText("...").ToHtmlString();
+
+        @Ajax.ActionLink(Model.TotalPages.ToString(),
+            "Index",
+            new {sortOrder = ViewBag.CurrentSort, page = Model.TotalPages, currentFilter = ViewBag.CurrentFilter},
+            new AjaxOptions
+            {
+                UpdateTargetId = "customersList",
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "GET"
+            },
+            new {@class = $"btn btn-defaul {nextDisabled} btn"})
     }
-    <li>
-        @Ajax.ActionLink("Next",
-                "Index",
-                new { sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter },
-                new AjaxOptions
-                {
-                    UpdateTargetId = "customersList",
-                    InsertionMode = InsertionMode.Replace,
-                    HttpMethod = "GET"
-                },
-                new { @class = $"btn btn-default {nextDisabled} btn" })
-    </li>
-</ul>
+
+    @Ajax.ActionLink("Next",
+        "Index",
+        new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter},
+        new AjaxOptions
+        {
+            UpdateTargetId = "customersList",
+            InsertionMode = InsertionMode.Replace,
+            HttpMethod = "GET"
+        },
+        new {@class = $"btn btn-default {nextDisabled} btn"})
+</div>
