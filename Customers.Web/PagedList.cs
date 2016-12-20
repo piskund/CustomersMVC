@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Customers.Web
 {
@@ -13,7 +15,7 @@ namespace Customers.Web
         public int Stats { get; }
         public bool SelectAll { get; set; }
 
-        public PagedList(List<T> items, int count, int pageIndex, int pageSize)
+        private PagedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
@@ -25,6 +27,18 @@ namespace Customers.Web
         public bool HasPreviousPage => (PageIndex > 1);
 
         public bool HasNextPage => (PageIndex < TotalPages);
+
+        public static PagedList<T> Create(IEnumerable<T> source, int pageIndex, int pageSize)
+        {
+            var count = source.Count();
+            var items = source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return new PagedList<T>(items, count, pageIndex, pageSize);
+        }
+
+        public static Task<PagedList<T>> CreateAsync(IEnumerable<T> source, int pageIndex, int pageSize)
+        {
+            return CreateAsync(source.AsQueryable(), pageIndex, pageSize);
+        }
 
         public static async Task<PagedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
         {

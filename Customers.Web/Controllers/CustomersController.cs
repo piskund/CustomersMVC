@@ -72,7 +72,6 @@ namespace Customers.Web.Controllers
                     break;
 
                 default:
-                    customers = customers.OrderBy(c => c.FullName);
                     break;
             }
 
@@ -84,7 +83,7 @@ namespace Customers.Web.Controllers
                 pageSize = 5;
             }
 
-            var model = new PagedList<Customer>(customers.ToList(), customers.Count(), page ?? 1, pageSize);
+            var model = PagedList<Customer>.Create(customers, page ?? 1, pageSize);
 
             if (Request.IsAjaxRequest())
             {
