@@ -16,16 +16,27 @@ namespace Customers.Web.Controllers
 
         // GET: Customers
         [Authorize(Roles = RoleNames.AllowedToRead)]
-        public ActionResult Index(string sortOrder, 
+        public async Task<ActionResult> Index(string sortOrder, 
             string currentFilter,
             string searchString,
             int? page)
         {
+            var customersProjection = _db.Customers.Select(c => c);
+
+            // Parse page size parameter from config.
+            var pageSizeFromConfig = ConfigurationManager.AppSettings["GridPageSize"];
+            int pageSize;
+            if (!int.TryParse(pageSizeFromConfig, out pageSize))
+            {
+                // Just give it some default vaue if the config is corrupted.
+                pageSize = 5;
+            }
+
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["LoginSortParm"] = sortOrder == "login_desc" ? "login" : "login_desc";
-            ViewData["NameSortParm"] =  sortOrder == "name_desc" ? "name" : "name_desc";
-            ViewData["EmailSortParm"] = sortOrder == "email_desc" ? "email" : "email_desc";
-            ViewData["PhoneSortParm"] = sortOrder == "phone_desc" ? "phone" : "phone_desc";
+            ViewData["LoginSortParm"] = sortOrder == "login" ? "login_desc" : "login";
+            ViewData["NameSortParm"] = sortOrder == "name" ? "name_desc" : "name";
+            ViewData["EmailSortParm"] = sortOrder == "email" ? "email_desc" : "email";
+            ViewData["PhoneSortParm"] = sortOrder == "phone" ? "phone_desc" : "phone";
 
             if (searchString != null)
             {
@@ -38,7 +49,13 @@ namespace Customers.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            IEnumerable<Customer> customers = _db.Customers.Select(c => c).AsEnumerable();
+            // Http-request (no sorting/filtering needed)
+            if (!Request.IsAjaxRequest())
+            {
+                return View(await PagedList<Customer>.CreateAsync(customersProjection, 1, pageSize));
+            }
+
+            IEnumerable<Customer> customers = customersProjection.AsEnumerable();
             if (!string.IsNullOrEmpty(searchString))
             {
                 customers = customers.Where(c => c.FullName.Contains(searchString));
@@ -70,27 +87,11 @@ namespace Customers.Web.Controllers
                 case "phone_desc":
                     customers = customers.OrderByDescending(c => c.PhoneNumber);
                     break;
-
-                default:
-                    break;
-            }
-
-            var pageSizeFromConfig = ConfigurationManager.AppSettings["GridPageSize"];
-            int pageSize;
-            if (!int.TryParse(pageSizeFromConfig, out pageSize))
-            {
-                // Just give it some default vaue if the config is corrupted.
-                pageSize = 5;
             }
 
             var model = PagedList<Customer>.Create(customers, page ?? 1, pageSize);
 
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("_CustomersPartial", model);
-            }
-
-            return View(model);
+            return PartialView("_CustomersPartial", model);
         }
 
         // GET: Customers/Details/5
