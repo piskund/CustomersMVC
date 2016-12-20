@@ -1,17 +1,13 @@
 ﻿@using Customers.Web.Models
 @model PagedList<Customer>
-<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <div id="customersList">
-@Html.LabelFor(model => model.Stats)
-@Html.DisplayFor(model => model.Stats)
+    <div class="stats">
+        @Html.LabelFor(model => model.Stats)
+        @Html.DisplayFor(model => model.Stats)
+    </div>
 
-
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-    Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages    
+    @Html.Partial("_PagerPartial", Model)
 
     <table class="table">
         <tr>
@@ -97,47 +93,9 @@
                 </td>
             </tr>
         }
-        <tr>
-            <td>
-                @Ajax.ActionLink("Prev",
-                    "Index",
-                    new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter},
-                    new AjaxOptions
-                    {
-                        UpdateTargetId = "customersList",
-                        InsertionMode = InsertionMode.Replace,
-                        HttpMethod = "GET"
-                    },
-                    new { @class = $"btn btn-default {prevDisabled} btn"})
-            </td>
-            @for (int i = 1; i <= Model.TotalPages; i++)
-            {
-                var isDisabled = Model.PageIndex == i ? "disabled" : "";
-                <td>
-                    @Ajax.ActionLink(i.ToString(),
-                        "Index",
-                        new {sortOrder = ViewBag.CurrentSort, page = i, currentFilter = ViewBag.CurrentFilter },
-                        new AjaxOptions
-                        {
-                            UpdateTargetId = "customersList",
-                            InsertionMode = InsertionMode.Replace,
-                            HttpMethod = "GET"
-                        },
-                        new { @class = $"btn btn-default {isDisabled} btn" })
-                </td>
-            }
-            <td>
-                @Ajax.ActionLink("Next",
-                    "Index",
-                    new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter},
-                    new AjaxOptions
-                    {
-                        UpdateTargetId = "customersList",
-                        InsertionMode = InsertionMode.Replace,
-                        HttpMethod = "GET"
-                    },
-                    new { @class = $"btn btn-default {nextDisabled} btn" })
-            </td>
-        </tr>
     </table>
+    
+    @Html.Partial("_PagerPartial", Model)
+    
+    Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages
 </div>

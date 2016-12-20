@@ -25,8 +25,8 @@ namespace Customers.Web
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css",
-                      "~/Content/pagedlist.css"));
+                      "~/Content/Site.css",
+                      "~/Content/Pagedlist.css"));
         }
     }
 }

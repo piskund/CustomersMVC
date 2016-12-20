@@ -24,12 +24,19 @@ namespace Customers.Web.Controllers
             var customersProjection = _db.Customers.Select(c => c);
 
             // Parse page size parameter from config.
-            var pageSizeFromConfig = ConfigurationManager.AppSettings["GridPageSize"];
+            var pageSizeFromConfig = ConfigurationManager.AppSettings["PagedListPageSize"];
             int pageSize;
             if (!int.TryParse(pageSizeFromConfig, out pageSize))
             {
                 // Just give it some default vaue if the config is corrupted.
-                pageSize = 5;
+                pageSize = 10;
+            }
+            var numOfBtnsFromConfig = ConfigurationManager.AppSettings["NumberOfButtons"];
+            int numOfButtons;
+            if (!int.TryParse(numOfBtnsFromConfig, out numOfButtons))
+            {
+                // Just give it some default vaue if the config is corrupted.
+                numOfButtons = 5;
             }
 
             ViewData["CurrentSort"] = sortOrder;
@@ -52,7 +59,7 @@ namespace Customers.Web.Controllers
             // Http-request (no sorting/filtering needed)
             if (!Request.IsAjaxRequest())
             {
-                return View(await PagedList<Customer>.CreateAsync(customersProjection, 1, pageSize));
+                return View(await PagedList<Customer>.CreateAsync(customersProjection, 1, pageSize, numOfButtons));
             }
 
             IEnumerable<Customer> customers = customersProjection.AsEnumerable();
@@ -89,7 +96,7 @@ namespace Customers.Web.Controllers
                     break;
             }
 
-            var model = PagedList<Customer>.Create(customers, page ?? 1, pageSize);
+            var model = PagedList<Customer>.Create(customers, page ?? 1, pageSize, numOfButtons);
 
             return PartialView("_CustomersPartial", model);
         }

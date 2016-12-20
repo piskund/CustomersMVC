@@ -201,6 +201,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Customers\_SearchPartial.cshtml" />
     <Content Include="Views\Customers\_CustomersPartial.cshtml" />
+    <Content Include="Views\Customers\_PagerPartial.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
