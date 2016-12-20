@@ -9,10 +9,15 @@
 
     @Html.Partial("_PagerPartial", Model)
 
+    @Scripts.Render("~/scripts/jquery.custom.js")
+    
+    
+    <a id="selectAllLink" href="">Select All</a>   
+
     <table class="table">
         <tr>
             <th>
-                @Html.CheckBoxFor(p => p.SelectAll)
+                @Html.CheckBoxFor(p => p.SelectAll, new {id = "selectAll"})
             </th>
             <th>
                 @Ajax.ActionLink(Html.DisplayNameFor(p => p.FirstOrDefault().Login).ToHtmlString(),
@@ -68,9 +73,12 @@
 
         @foreach (var item in Model)
         {
+            var emailTo = $"mailto:{item.Email}";
             <tr>
                 <td>
-                    @Html.CheckBoxFor(modelItem => item.IsChecked)
+                    <div id="checkboxes">
+                        @Html.CheckBoxFor(modelItem => item.IsChecked)
+                    </div>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Login)
@@ -79,7 +87,9 @@
                     @Html.DisplayFor(modelItem => item.FullName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Email)
+                    <a href='@emailTo'>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PhoneNumber)
