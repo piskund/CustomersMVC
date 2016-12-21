@@ -9,10 +9,8 @@ using WebGrease.Css.Extensions;
 
 namespace Customers.Web.DAL
 {
-    internal class CustomersInitializer : DropCreateDatabaseIfModelChanges<CustomerContext>
+    internal class CustomersInitializer : DropCreateDatabaseAlways<CustomerContext>
     {
-        // DropCreateDatabaseIfModelChanges
-        // DropCreateDatabaseAlways
         protected override void Seed(CustomerContext context)
         {
             if (context.Customers.Any())
