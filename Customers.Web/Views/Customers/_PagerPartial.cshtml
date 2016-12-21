@@ -5,16 +5,16 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<div class="row"  style="height: 30px; background-color: darkgrey">
-    <div class="col-sm-1">
+<div class="row"  style="height: 35px; background-color: darkgrey">
+    <div class="col-md-2">
         <a class="selectAllLink" href="#">Select All</a>
     </div>
 
-    <div class="col-sm-1" align="left">
+    <div class="col-md-1" align="left">
         |
     </div>
 
-    <div class="col-sm-6" align="right">
+    <div class="col-md-6" align="right">
         <ul class="pagination" style="margin: 0px">
             <li>
                 @Ajax.ActionLink("Prev",
@@ -49,11 +49,11 @@
 
 @if (Model.IsDotsNeeded)
 {
-    <div class="col-sm-1">
+    <div class="col-md-1">
         ...
     </div>
 }
-    <div class="col-sm-2" align="left">
+    <div class="col-md-2" align="left">
         <ul class="pagination" style="margin: 0px">
             <li>
                 @Ajax.ActionLink(Model.TotalPages.ToString(),

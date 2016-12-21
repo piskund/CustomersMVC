@@ -1,0 +1,14 @@
+﻿@model PagedList<Customers.Web.Models.Customer>
+
+<div id="customersList">
+    @Scripts.Render("~/scripts/jquery.custom.js")
+
+    @Html.Partial("_PagerPartial", Model)
+
+    @Html.Partial("_CustomersTablePartial", Model)
+
+    @Html.Partial("_PagerPartial", Model)
+    
+    Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages
+</div>
+

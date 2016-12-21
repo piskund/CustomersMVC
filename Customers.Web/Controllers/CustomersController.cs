@@ -97,8 +97,9 @@ namespace Customers.Web.Controllers
             }
 
             var model = PagedList<Customer>.Create(customers, page ?? 1, pageSize, numOfButtons);
+            model.CurrentFilter = searchString;
 
-            return PartialView("_CustomersPartial", model);
+            return PartialView("_CustomersListPartial", model);
         }
 
         // GET: Customers/Details/5

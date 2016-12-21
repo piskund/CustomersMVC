@@ -159,7 +159,6 @@
     </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -209,6 +208,8 @@
     <Content Include="Views\Customers\_CustomersPartial.cshtml" />
     <Content Include="Views\Customers\_PagerPartial.cshtml" />
     <Content Include="Views\CustomerRoles\Index.cshtml" />
+    <Content Include="Views\Customers\_CustomersTablePartial.cshtml" />
+    <Content Include="Views\Customers\_CustomersListPartial.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
