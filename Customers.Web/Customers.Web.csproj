@@ -133,6 +133,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CustomerRolesController.cs" />
     <Compile Include="Controllers\CustomersController.cs" />
     <Compile Include="DAL\CustomerContext.cs" />
     <Compile Include="DAL\CustomersInitializer.cs" />
@@ -207,6 +208,7 @@
     <Content Include="Views\Customers\_SearchPartial.cshtml" />
     <Content Include="Views\Customers\_CustomersPartial.cshtml" />
     <Content Include="Views\Customers\_PagerPartial.cshtml" />
+    <Content Include="Views\CustomerRoles\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
