@@ -94,8 +94,13 @@
                     @Html.DisplayFor(modelItem => item.IsActive)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
-                    @Html.ActionLink("Delete", "Delete", new {id = item.Id})
+                    <a href="@Url.Action("Edit", new {id=item.Id})", class="btn">
+                        <img src="@Url.Content("~/images/pencil_green.png")" />
+                    </a>
+
+                    <a href="@Url.Action("Delete", new {id=item.Id})" , class="btn">
+                        <img src="@Url.Content("~/images/cross_red.png")" />
+                    </a>
                 </td>
             </tr>
         }

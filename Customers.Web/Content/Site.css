@@ -3,6 +3,7 @@
     font-family: Verdana, Arial, Helvetica, Sans-Serif;
     background-color: #f7f7fa;
     padding-left:40px;
+    color: #2a6496;
 }
 table {
    vertical-align:middle;
@@ -42,4 +43,28 @@ textarea {
   margin: 20px 0;
   text-align: right;
   list-style: none;
+}
+
+.navbar {
+    background-color: blue;
+}
+
+.imgcheckbox {
+    display:none;
+}
+
+.imgcheckbox{
+    background:url('~/images/inactive_red.png') no-repeat;
+    height: 16px;
+    width: 16px;
+    display:inline-block;
+    padding: 0 0 0 0px;
+}
+
+.imgcheckbox:checked{
+    background:url('~/images/active_green.png') no-repeat;
+    height: 16px;
+    width: 16px;
+    display:inline-block;
+    padding: 0 0 0 0px;
 }
