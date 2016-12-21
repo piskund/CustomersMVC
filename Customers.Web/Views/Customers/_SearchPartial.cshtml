@@ -1,0 +1,12 @@
+﻿@using (Ajax.BeginForm(
+    new AjaxOptions()
+    {
+        HttpMethod = "get",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "customersList"
+    }))
+{
+    @Html.Raw("Search")
+    <input type="text" name="searchString" value="@ViewData["currentFilter"]"/>
+    <input type="submit" value="Search" class="btn btn-default btn"/>
+}

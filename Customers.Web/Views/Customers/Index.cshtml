@@ -1,0 +1,17 @@
+﻿@using Customers.Web.Models
+@model PagedList<Customer>
+
+@{
+    ViewBag.Title = "Customers";
+}
+@if (Request.IsAuthenticated && (User.IsInRole(RoleNames.Administrator) || User.IsInRole(RoleNames.Manager)))
+{
+    <p>
+        @Html.ActionLink("Create customer", "Create", "Customers", new { @class = "btn btn-default" })
+    </p>
+}
+
+@Html.Partial("_CustomersPartial", Model)
+
+
+

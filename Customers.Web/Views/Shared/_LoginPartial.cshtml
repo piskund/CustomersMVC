@@ -1,0 +1,13 @@
+﻿@using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+{
+@Html.AntiForgeryToken()
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                @User.Identity.Name
+            </li>
+            <li style="color: black">&nbsp;|</li>
+            <li>
+                <a style="margin: 0px; color: white; text-decoration: underline; display: inline" href="javascript:document.getElementById('logoutForm').submit()">Logout</a>
+            </li>
+        </ul>
+}

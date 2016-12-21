@@ -1,0 +1,100 @@
+﻿@using Customers.Web.Models
+@model PagedList<Customer>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.CheckBoxFor(p => p.SelectAll, new { id = "selectAll" })
+        </th>
+        <th>
+            @Ajax.ActionLink(Html.DisplayNameFor(p => p.FirstOrDefault().Login).ToHtmlString(),
+                    "Index",
+                    new { sortOrder = ViewBag.LoginSortParm },
+                    new AjaxOptions
+                    {
+                        UpdateTargetId = "customersList",
+                        InsertionMode = InsertionMode.Replace,
+                        HttpMethod = "GET"
+                    })
+        </th>
+        <th>
+            @Ajax.ActionLink(Html.DisplayNameFor(p => p.FirstOrDefault().FullName).ToHtmlString(),
+                    "Index",
+                    new { sortOrder = ViewBag.NameSortParm },
+                    new AjaxOptions
+                    {
+                        UpdateTargetId = "customersList",
+                        InsertionMode = InsertionMode.Replace,
+                        HttpMethod = "GET"
+                    })
+        </th>
+        <th>
+            @Ajax.ActionLink(Html.DisplayNameFor(p => p.FirstOrDefault().Email).ToHtmlString(),
+                    "Index",
+                    new { sortOrder = ViewBag.EmailSortParm },
+                    new AjaxOptions
+                    {
+                        UpdateTargetId = "customersList",
+                        InsertionMode = InsertionMode.Replace,
+                        HttpMethod = "GET"
+                    })
+        </th>
+        <th>
+            @Ajax.ActionLink(Html.DisplayNameFor(p => p.FirstOrDefault().PhoneNumber).ToHtmlString(),
+                    "Index",
+                    new { sortOrder = ViewBag.PhoneSortParm },
+                    new AjaxOptions
+                    {
+                        UpdateTargetId = "customersList",
+                        InsertionMode = InsertionMode.Replace,
+                        HttpMethod = "GET"
+                    })
+        </th>
+        <th>
+            @Html.DisplayNameFor(p => p.FirstOrDefault().IsActive)
+        </th>
+        <th>
+            Edit/Delete
+        </th>
+    </tr>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var emailTo = $"mailto:{item.Email}";
+            <tr>
+                <td>
+                    <div id="checkboxes">
+                        @Html.CheckBoxFor(modelItem => item.IsChecked)
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Login)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    <a href='@emailTo'>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", new {id = item.Id})" , class="btn">
+                        <img src="@Url.Content("~/images/pencil_green.png")" />
+                    </a>
+
+                    <a href="@Url.Action("Delete", new {id = item.Id})" , class="btn">
+                        <img src="@Url.Content("~/images/cross_red.png")" />
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

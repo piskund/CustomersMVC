@@ -1,0 +1,84 @@
+﻿@model PagedList<Customers.Web.Models.Customer>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="row"  style="height: 35px; background-color: darkgrey">
+    <div class="col-md-2">
+        <a class="selectAllLink" href="#">Select All</a>
+    </div>
+
+    <div class="col-md-1" align="left">
+        |
+    </div>
+
+    <div class="col-md-6" align="right">
+        <ul class="pagination" style="margin: 0px">
+            <li>
+                @Ajax.ActionLink("Prev",
+                    "Index",
+                    new { sortOrder = ViewBag.CurrentSort, page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter },
+                    new AjaxOptions
+                    {
+                        UpdateTargetId = "customersList",
+                        InsertionMode = InsertionMode.Replace,
+                        HttpMethod = "GET"
+                    },
+                    new { @class = $"btn btn-default {prevDisabled} btn" })
+            </li>
+            @for (var i = 1; i <= Model.NumberOfPagerButtons; i++)
+            {
+                <li>
+                    @{ var isDisabled = Model.PageIndex == i ? "disabled" : ""; }
+                    @Ajax.ActionLink(i.ToString(),
+                        "Index",
+                        new {sortOrder = ViewBag.CurrentSort, page = i, currentFilter = ViewBag.CurrentFilter},
+                        new AjaxOptions
+                        {
+                            UpdateTargetId = "customersList",
+                            InsertionMode = InsertionMode.Replace,
+                            HttpMethod = "GET"
+                        },
+                        new {@class = $"btn btn-defaul {isDisabled} btn"})
+                </li>
+            }
+        </ul>
+    </div>
+
+@if (Model.IsDotsNeeded)
+{
+    <div class="col-md-1">
+        ...
+    </div>
+}
+    <div class="col-md-2" align="left">
+        <ul class="pagination" style="margin: 0px">
+            <li>
+                @Ajax.ActionLink(Model.TotalPages.ToString(),
+                    "Index",
+                    new { sortOrder = ViewBag.CurrentSort, page = Model.TotalPages, currentFilter = ViewBag.CurrentFilter },
+                    new AjaxOptions
+                    {
+                        UpdateTargetId = "customersList",
+                        InsertionMode = InsertionMode.Replace,
+                        HttpMethod = "GET"
+                    },
+                    new { @class = $"btn btn-defaul {nextDisabled} btn" })
+            </li>
+            <li>
+                @Ajax.ActionLink("Next",
+                    "Index",
+                    new { sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter },
+                    new AjaxOptions
+                    {
+                        UpdateTargetId = "customersList",
+                        InsertionMode = InsertionMode.Replace,
+                        HttpMethod = "GET"
+                    },
+                    new { @class = $"btn btn-default {nextDisabled} btn" })
+            </li>
+        </ul>
+    </div>
+</div>
