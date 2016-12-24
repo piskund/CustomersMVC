@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using System.Web.Security;
 using Customers.Web.Models;
 
@@ -20,16 +21,25 @@ namespace Customers.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginViewModel model, string returnUrl)
+        public ActionResult Login(LoginViewModel model, string returnUrl, string errorMessage)
         {
+            if (!RoleNames.GetRolesWithAcccessToSite().Any(r =>  Roles.GetRolesForUser(model.Login).Contains(r) ))
+            {
+                ModelState.AddModelError("", "Your current role(s) has no access to this site.");
+                FormsAuthentication.SignOut();
+                return View(model);
+            }
+
             if (ModelState.IsValid)
             {
                 if (Membership.ValidateUser(model.Login, model.Password))
                 {
                     var membershipUser = Membership.GetUser(model.Login);
+                    
                     if (membershipUser != null && membershipUser.IsApproved)
                     {
                         FormsAuthentication.SetAuthCookie(model.Login, true);
+
                         if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                             && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                         {

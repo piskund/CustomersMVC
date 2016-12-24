@@ -8,6 +8,8 @@ namespace Customers.Web
 {
     public class PagedList<T> : List<T>
     {
+        public static PagedList<T> Empty => Create(Enumerable.Empty<T>(), 0, 0, 0);
+
         private PagedList(List<T> items, int count, int pageIndex, int pageSize, int numberOfButtons)
         {
             PageIndex = pageIndex;

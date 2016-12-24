@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Customers.Web.DAL;
 using Customers.Web.Models;
 using System.Collections.Generic;
+using System.Web.Security;
 
 namespace Customers.Web.Controllers
 {
@@ -15,12 +16,17 @@ namespace Customers.Web.Controllers
         private readonly CustomerContext _db = new CustomerContext();
 
         // GET: Customers
-        [Authorize(Roles = RoleNames.AllowedToRead)]
         public async Task<ActionResult> Index(string sortOrder, 
             string currentFilter,
             string searchString,
             int? page)
         {
+            if (!RoleNames.GetRolesWithAcccessToSite().Any(r => User.IsInRole(r)))
+            {
+                FormsAuthentication.SignOut();
+                return RedirectToAction("Login", "Account");
+            }
+
             var customersProjection = _db.Customers.Select(c => c);
 
             // Parse page size parameter from config.
