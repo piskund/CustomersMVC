@@ -87,14 +87,14 @@ textarea {
     background-image:url('~/images/inactive_red.png');
     height: 16px;
     width: 16px;
-    display:inline-block;
-    padding: 0 0 0 0px;
+    display: inline-block;
+    padding: 8px 0 0 14px;
 }
 
 .imgcheckbox:checked{
     background-image:url('~/images/active_green.png');
     height: 16px;
     width: 16px;
-    display:inline-block;
-    padding: 0 0 0 0px;
+    display: inline-block;
+    padding: 8px 0 0 14px;
 }

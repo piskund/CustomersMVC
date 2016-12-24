@@ -13,12 +13,6 @@ namespace Customers.Web.DAL
     {
         protected override void Seed(CustomerContext context)
         {
-            if (context.Customers.Any())
-            {
-                // DB has been already seeded.
-                return;
-            }
-
             // Fill initial values of customers with fake data.
             var customers = new List<Customer>
             {
@@ -66,7 +60,7 @@ namespace Customers.Web.DAL
             var allCustomers = customers.Select(c => c.Login).ToArray();
             Roles.AddUsersToRole(allCustomers, RoleNames.Customer);
 
-            var admins = customers.Select(c => c.Login).Where(l => l.Contains("a")).ToArray();
+            var admins = customers.Select(c => c.Login).Where(l => l.Contains("s")).ToArray();
             Roles.AddUsersToRole(admins, RoleNames.Administrator);
 
             var managers = customers.Select(c => c.Login).Where(l => l.Contains("m")).ToArray();

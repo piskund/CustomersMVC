@@ -83,7 +83,16 @@
                     @Html.DisplayFor(modelItem => item.PhoneNumber)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsActive)
+                    <label for="@item.IsActive" class="imgcheckbox">
+                        @if (item.IsActive)
+                        {
+                            <img src="/Images/active_green.png" />
+                        }
+                        else
+                        {
+                            <img src="/Images/inactive_red.png" />
+                        }
+                    </label>
                 </td>
                 <td>
                     <a href="@Url.Action("Edit", new {id = item.Id})" , class="btn">
