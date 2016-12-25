@@ -1,23 +1,12 @@
 ﻿body {
-    padding-top: 40px;
-    height: 80%;
-    font-size: 13px;
-    font-family: Verdana, Arial, Helvetica, Sans-Serif;
-    background-color: #f7f7fa;
-    padding-left:40px;
+    padding-top: 80px;
+    background-color: azure;
 }
 
 table {
-   vertical-align:middle;
-   text-align:left;
-   width: 100%  
- }
-
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 80%;
+    background-color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .stats {
@@ -42,8 +31,30 @@ textarea {
     width: 90%
 }
 
-.customersList .row {
+.customersArea .row {
     background-color: lightgray
+}
+
+.mypager .row {
+    background-color: lightgray;
+    height: 30px;
+}
+
+.mypager .pager .btn {
+    margin: 0;
+    height: 25px;
+    min-width: 30px;
+    font-size: 10px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 5px;
+    border-radius: 4px;
+}
+
+.rawtext
+{
+   display:inline-block;
+   margin:0;
 }
 
 .navbar {

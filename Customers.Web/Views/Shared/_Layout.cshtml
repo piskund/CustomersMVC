@@ -12,24 +12,22 @@
     <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-@if (Request.IsAuthenticated){
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <h2 style="color: darkblue; vertical-align: text-top">
-                    Management System
-                </h2>
-            </div>
-            <div class="navbar-collapse collapse">
-                @Html.Partial("_LoginPartial")
-            </div>
-            <ul class="nav nav-tabs">
-                <li active>@Html.ActionLink("Customers", "Index", "Customers")</li>
-                <li>@Html.ActionLink("Customer Roles", "Index", "CustomerRoles")</li>
-            </ul>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <h2 style="color: darkblue; vertical-align: text-top">
+                Management System
+            </h2>
         </div>
+        <div class="navbar-collapse collapse">
+            @Html.Partial("_LoginPartial")
+        </div>
+        <ul class="nav nav-tabs">
+            <li active>@Html.ActionLink("Customers", "Index", "Customers")</li>
+            <li>@Html.ActionLink("Customer Roles", "Index", "CustomerRoles")</li>
+        </ul>
     </div>
-}
+</div>
 <div class="container body-content">
     @RenderBody()
 </div>
