@@ -179,35 +179,23 @@ namespace Customers.Web.Controllers
                 await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(customer);
+            var customers = _db.Customers.Select(c => c);
+            var model = PagedList<Customer>.Create(customers, 1, 10, 5);
+            model.CurrentFilter = string.Empty;
+
+            return PartialView("_CustomersListPartial", model);
         }
 
         // GET: Customers/Delete/5
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public async Task<ActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Customer customer = await _db.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return HttpNotFound();
-            }
-            return View(customer);
-        }
-
-        // POST: Customers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = RoleNames.AllowedToModify)]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        [AcceptVerbs(HttpVerbs.Delete)]
+        public ActionResult Delete(int? id, string sortOrder)
         {
             Customer customer = _db.Customers.Find(id);
             _db.Customers.Remove(customer);
-            await _db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            _db.SaveChanges();
+
+            return RedirectToAction("Index", new {sortOrder});
         }
 
         protected override void Dispose(bool disposing)

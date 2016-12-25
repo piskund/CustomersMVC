@@ -32,10 +32,10 @@ namespace Customers.Web.DAL
                 var randomString = Guid.NewGuid().ToString("N");
                 var customer = new Customer()
                 {
-                    FirstName = randomString.Substring(0, 5),
-                    LastName = randomString.Substring(5, 7),
-                    Login = randomString.Substring(12, 6),
-                    Email = randomString.Substring(0, 12) + "@fake.com"
+                    FirstName = randomString.Substring(0, 10),
+                    LastName = randomString.Substring(10, 15),
+                    Login = randomString.Substring(0, 20),
+                    Email = randomString.Substring(0, 15) + "@fake.com"
                 };
                 customers.Add(customer);
             }

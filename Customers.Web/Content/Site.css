@@ -32,7 +32,6 @@ table {
 }
 
 .customersArea .row {
-    background-color: lightgray
 }
 
 .mypager .row {
@@ -90,22 +89,22 @@ table {
     background-color: white;
 }
 
-.imgcheckbox {
-    display:none;
+a.editItem {
+    background: url('/images/pencil_green.png') no-repeat center left;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-decoration: none;
+    text-indent: -9999px;
+    padding: 0 10px 0 10px;
 }
 
-.imgcheckbox{
-    background-image:url('~/images/inactive_red.png');
-    height: 16px;
-    width: 16px;
+a.deleteItem {
+    background: url('/images/cross_red.png') no-repeat center left;
     display: inline-block;
-    padding: 8px 0 0 14px;
-}
-
-.imgcheckbox:checked{
-    background-image:url('~/images/active_green.png');
-    height: 16px;
     width: 16px;
-    display: inline-block;
-    padding: 8px 0 0 14px;
+    height: 16px;
+    text-decoration: none;
+    text-indent: -9999px;
+    padding: 0 0 0 0;
 }
