@@ -1,4 +1,4 @@
-﻿@model PagedList<Customers.Web.Models.Customer>
+﻿@model Customers.Web.Models.PagedList<Customers.Web.Models.Customer>
 
 <table class="table">
     <tr>
@@ -110,7 +110,8 @@
                         Confirm = "Are you sure you want to delete this customer?",
                         UpdateTargetId = "customersList",
                         InsertionMode = InsertionMode.Replace,
-                        HttpMethod = "DELETE"
+                        HttpMethod = "DELETE",
+                        OnSuccess = "updateTotal"
                     },
                     new
                     {

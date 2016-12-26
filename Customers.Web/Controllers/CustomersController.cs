@@ -108,6 +108,11 @@ namespace Customers.Web.Controllers
             return PartialView("_CustomersListPartial", model);
         }
 
+        public ActionResult Stats(int? currentStats)
+        {
+            return PartialView("_StatsPartial", currentStats ?? 0);
+        }
+
         // GET: Customers/Details/5
         [Authorize(Roles = RoleNames.AllowedToRead)]
         public async Task<ActionResult> Details(int? id)

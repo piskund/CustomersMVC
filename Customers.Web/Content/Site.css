@@ -13,6 +13,7 @@ table {
     background-color: lightgrey;
     color: blue;
     font-size: 12px;
+    margin-top: 1px;
 }
 
 .stats .btn {
@@ -22,16 +23,17 @@ table {
     vertical-align: middle;
     text-align: center;
     align-self: center;
+    margin-top: 5px;
 }
 
 .stats .row {
     padding-left: 20px;
-}
-.stats .input {
-    width: 90%
+    height: 30px;
 }
 
-.customersArea .row {
+input.stats {
+    font-size: 14px;
+    color: green;
 }
 
 .mypager .row {

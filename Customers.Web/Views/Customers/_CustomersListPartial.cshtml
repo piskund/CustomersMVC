@@ -1,14 +1,23 @@
-﻿@model PagedList<Customers.Web.Models.Customer>
+﻿@model Customers.Web.Models.PagedList<Customers.Web.Models.Customer>
 
 <div id="customersList">
+    @{
+        var currentStats = Model.Stats;
+    }
+
     @Scripts.Render("~/scripts/jquery.custom.js")
+
+    <script type="text/javascript">
+        function updateTotal() {
+            $('#statsTotal').load('@Url.Action("Stats", "Customers")?currentStats=' + @currentStats);
+        }
+    </script>
 
     @Html.Partial("_PagerPartial", Model)
 
     @Html.Partial("_CustomersTablePartial", Model)
 
     @Html.Partial("_PagerPartial", Model)
-    
+
     Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages
 </div>
-

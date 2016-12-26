@@ -6,6 +6,8 @@
 }
 
 <div class="customersArea" style="padding-top: 40px">
+    @Scripts.Render("~/scripts/jquery.custom.js")
+
     <div class="row">
         <div class="col-sm-10">
             @Html.Partial("_CustomersListPartial", Model)
@@ -16,7 +18,7 @@
                     <div class="row">
                         @if (Request.IsAuthenticated && (User.IsInRole(RoleNames.Administrator) || User.IsInRole(RoleNames.Manager)))
                         {
-                            @Html.ActionLink("Create customer", "Create", null, new { @class = "btn btn-default btn" })
+                            @Html.ActionLink("Create customer", "Create", null, new {@class = "btn btn-default btn"})
                         }
                     </div>
                     <div class="row" style="background-color: #f7f7fa; height: 10px">
@@ -25,18 +27,10 @@
                     <div class="row">
                         @Html.LabelFor(model => model.Stats)
                     </div>
-                    <div class="row" style="color: black; padding-right: 15px;">
-                        <div class="col-md-9">
-                            @Html.Raw("Total items")
-                        </div>
-                        <div class="col-md">
-                            @Html.DisplayFor(model => model.Stats)
-                        </div>
-                    </div>
-                    <div class="row" style="background-color: #f7f7fa; height: 10px">
-                        &nbsp;
-                    </div>
                     <div class="row">
+                        @Html.Partial("_StatsPartial", Model.Stats)
+                    </div>
+                    <div class="row" style="margin-top: 10px; height: 80px;" >
                         @Html.Partial("_SearchPartial", Model)
                     </div>
                 </div>

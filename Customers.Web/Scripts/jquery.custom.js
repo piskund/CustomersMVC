@@ -37,3 +37,19 @@ $(document)
                 return false;
             });
     });
+
+$(document)
+    .ready(function () {
+        // Get a value of the selectAll box:
+        var checkAllBox = $("#selectAll");
+
+        //Set the default value of the global checkbox to false:
+        checkAllBox.prop("checked", false);
+
+        // Attach the call to toggleChecked to the
+        // click event of the global checkbox:
+        checkAllBox.click(function () {
+            var status = checkAllBox.prop("checked");
+            toggleChecked(status);
+        });
+    });

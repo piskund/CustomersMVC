@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Customers.Web
+namespace Customers.Web.Models
 {
     public class PagedList<T> : List<T>
     {
@@ -21,6 +22,7 @@ namespace Customers.Web
             AddRange(items);
         }
 
+        [Display(Name = "Search")]
         public string CurrentFilter { get; set; }
         public int PageIndex { get; }
         public int TotalPages { get; }
