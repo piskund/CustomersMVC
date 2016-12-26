@@ -4,14 +4,39 @@
 @{
     ViewBag.Title = "Customers";
 }
-@if (Request.IsAuthenticated && (User.IsInRole(RoleNames.Administrator) || User.IsInRole(RoleNames.Manager)))
-{
-    <p>
-        @Html.ActionLink("Create customer", "Create", "Customers", new { @class = "btn btn-default" })
-    </p>
-}
 
-@Html.Partial("_CustomersPartial", Model)
+<div class="customersArea" style="padding-top: 40px">
+    @Scripts.Render("~/scripts/jquery.custom.js")
 
+    <div class="row">
+        <div class="col-sm-10">
+            @Html.Partial("_CustomersListPartial", Model)
+        </div>
+        <div class="col-sm-2">
+            <div class="stats">
+                <div class="btn-group btn-group-sm">
+                    <div class="row">
+                        @if (Request.IsAuthenticated && (User.IsInRole(RoleNames.Administrator) || User.IsInRole(RoleNames.Manager)))
+                        {
+                            @Html.ActionLink("Create customer", "Create", null, new {@class = "btn btn-default btn"})
+                        }
+                    </div>
+                    <div class="row" style="background-color: #f7f7fa; height: 10px">
+                        &nbsp;
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(model => model.Stats)
+                    </div>
+                    <div class="row">
+                        @Html.Partial("_StatsPartial", Model.Stats)
+                    </div>
+                    <div class="row" style="margin-top: 10px; height: 80px;" >
+                        @Html.Partial("_SearchPartial", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 

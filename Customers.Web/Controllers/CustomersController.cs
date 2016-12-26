@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Customers.Web.DAL;
 using Customers.Web.Models;
 using System.Collections.Generic;
+using System.Web.Security;
 
 namespace Customers.Web.Controllers
 {
@@ -15,12 +16,17 @@ namespace Customers.Web.Controllers
         private readonly CustomerContext _db = new CustomerContext();
 
         // GET: Customers
-        [Authorize(Roles = RoleNames.AllowedToRead)]
         public async Task<ActionResult> Index(string sortOrder, 
             string currentFilter,
             string searchString,
             int? page)
         {
+            if (!RoleNames.GetRolesWithAcccessToSite().Any(r => User.IsInRole(r)))
+            {
+                FormsAuthentication.SignOut();
+                return RedirectToAction("Login", "Account");
+            }
+
             var customersProjection = _db.Customers.Select(c => c);
 
             // Parse page size parameter from config.
@@ -102,6 +108,11 @@ namespace Customers.Web.Controllers
             return PartialView("_CustomersListPartial", model);
         }
 
+        public ActionResult Stats(int? currentStats)
+        {
+            return PartialView("_StatsPartial", currentStats ?? 0);
+        }
+
         // GET: Customers/Details/5
         [Authorize(Roles = RoleNames.AllowedToRead)]
         public async Task<ActionResult> Details(int? id)
@@ -173,35 +184,23 @@ namespace Customers.Web.Controllers
                 await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(customer);
+            var customers = _db.Customers.Select(c => c);
+            var model = PagedList<Customer>.Create(customers, 1, 10, 5);
+            model.CurrentFilter = string.Empty;
+
+            return PartialView("_CustomersListPartial", model);
         }
 
         // GET: Customers/Delete/5
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public async Task<ActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Customer customer = await _db.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return HttpNotFound();
-            }
-            return View(customer);
-        }
-
-        // POST: Customers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = RoleNames.AllowedToModify)]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        [AcceptVerbs(HttpVerbs.Delete)]
+        public ActionResult Delete(int? id, string sortOrder)
         {
             Customer customer = _db.Customers.Find(id);
             _db.Customers.Remove(customer);
-            await _db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            _db.SaveChanges();
+
+            return RedirectToAction("Index", new {sortOrder});
         }
 
         protected override void Dispose(bool disposing)

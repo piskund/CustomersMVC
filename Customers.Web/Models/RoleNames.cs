@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using WebGrease.Css.Extensions;
 
 namespace Customers.Web.Models
 {
@@ -9,15 +12,28 @@ namespace Customers.Web.Models
         public const string Operator = "Operator";
         public const string Manager = "Manager";
 
-        public const string AllowedToRead = RoleNames.Administrator + "," + RoleNames.Manager + "," + RoleNames.Operator;
-        public const string AllowedToModify = RoleNames.Administrator + "," + RoleNames.Manager;
+        public const string AllowedToRead = Administrator + Separator + Manager + Separator + Operator;
+        public const string AllowedToModify = Administrator + Separator + Manager;
+
+        private const string Separator = ",";
+         
+        public static IEnumerable<string> GetRolesWithAcccessToSite()
+        {
+            yield return Administrator;
+            yield return Manager;
+            yield return Operator;
+        }
+
+        public static string GetAllowedToRead()
+        {
+            var sb = new StringBuilder();
+            GetRolesWithAcccessToSite().ForEach(r => sb.Append(r + Separator));
+            return sb.ToString().TrimEnd(Separator.ToCharArray());
+        }
 
         public static IEnumerable<string> GetAllRoles()
         {
-            yield return Administrator;
-            yield return Customer;
-            yield return Manager;
-            yield return Operator;
+            return GetRolesWithAcccessToSite().Concat(new [] { Customer });
         }
     }
 }

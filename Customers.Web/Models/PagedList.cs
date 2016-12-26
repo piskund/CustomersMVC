@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Customers.Web
+namespace Customers.Web.Models
 {
     public class PagedList<T> : List<T>
     {
+        public static PagedList<T> Empty => Create(Enumerable.Empty<T>(), 0, 0, 0);
+
         private PagedList(List<T> items, int count, int pageIndex, int pageSize, int numberOfButtons)
         {
             PageIndex = pageIndex;
@@ -19,6 +22,7 @@ namespace Customers.Web
             AddRange(items);
         }
 
+        [Display(Name = "Search")]
         public string CurrentFilter { get; set; }
         public int PageIndex { get; }
         public int TotalPages { get; }

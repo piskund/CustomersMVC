@@ -1,84 +1,84 @@
-﻿@model PagedList<Customers.Web.Models.Customer>
+﻿@model Customers.Web.Models.PagedList<Customers.Web.Models.Customer>
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<div class="row"  style="height: 35px; background-color: darkgrey">
-    <div class="col-md-2">
-        <a class="selectAllLink" href="#">Select All</a>
-    </div>
+<div class="mypager">
+    <div class="row">
+        <div class="col-md-3">
+            <a class="selectAllLink" href="#">Select All</a>
+            <div class="rawtext">
+                &nbsp; |
+            </div>
+        </div>
 
-    <div class="col-md-1" align="left">
-        |
-    </div>
-
-    <div class="col-md-6" align="right">
-        <ul class="pagination" style="margin: 0px">
-            <li>
-                @Ajax.ActionLink("Prev",
-                    "Index",
-                    new { sortOrder = ViewBag.CurrentSort, page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter },
-                    new AjaxOptions
-                    {
-                        UpdateTargetId = "customersList",
-                        InsertionMode = InsertionMode.Replace,
-                        HttpMethod = "GET"
-                    },
-                    new { @class = $"btn btn-default {prevDisabled} btn" })
-            </li>
-            @for (var i = 1; i <= Model.NumberOfPagerButtons; i++)
-            {
+        <div class="col-md-9">
+            <ul class="pager" style="margin: 0; padding-left: 50px">
                 <li>
-                    @{ var isDisabled = Model.PageIndex == i ? "disabled" : ""; }
-                    @Ajax.ActionLink(i.ToString(),
+                    @Ajax.ActionLink("Prev",
                         "Index",
-                        new {sortOrder = ViewBag.CurrentSort, page = i, currentFilter = ViewBag.CurrentFilter},
+                        new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex - 1, currentFilter = ViewBag.CurrentFilter},
                         new AjaxOptions
                         {
                             UpdateTargetId = "customersList",
                             InsertionMode = InsertionMode.Replace,
                             HttpMethod = "GET"
                         },
-                        new {@class = $"btn btn-defaul {isDisabled} btn"})
+                        new {@class = $"btn btn-default {prevDisabled} btn"})
                 </li>
-            }
-        </ul>
-    </div>
+                @for (var i = 1; i <= Model.NumberOfPagerButtons; i++)
+                {
+                    <li>
+                        @{ var isDisabled = Model.PageIndex == i ? "disabled" : ""; }
+                        @Ajax.ActionLink(i.ToString(),
+                            "Index",
+                            new {sortOrder = ViewBag.CurrentSort, page = i, currentFilter = ViewBag.CurrentFilter},
+                            new AjaxOptions
+                            {
+                                UpdateTargetId = "customersList",
+                                InsertionMode = InsertionMode.Replace,
+                                HttpMethod = "GET"
+                            },
+                            new {@class = $"btn btn-defaul {isDisabled} btn"})
+                    </li>
+                }
 
-@if (Model.IsDotsNeeded)
-{
-    <div class="col-md-1">
-        ...
-    </div>
-}
-    <div class="col-md-2" align="left">
-        <ul class="pagination" style="margin: 0px">
-            <li>
-                @Ajax.ActionLink(Model.TotalPages.ToString(),
-                    "Index",
-                    new { sortOrder = ViewBag.CurrentSort, page = Model.TotalPages, currentFilter = ViewBag.CurrentFilter },
-                    new AjaxOptions
-                    {
-                        UpdateTargetId = "customersList",
-                        InsertionMode = InsertionMode.Replace,
-                        HttpMethod = "GET"
-                    },
-                    new { @class = $"btn btn-defaul {nextDisabled} btn" })
-            </li>
-            <li>
-                @Ajax.ActionLink("Next",
-                    "Index",
-                    new { sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter },
-                    new AjaxOptions
-                    {
-                        UpdateTargetId = "customersList",
-                        InsertionMode = InsertionMode.Replace,
-                        HttpMethod = "GET"
-                    },
-                    new { @class = $"btn btn-default {nextDisabled} btn" })
-            </li>
-        </ul>
+                @if (Model.IsDotsNeeded)
+                {
+                    <li>
+                    <div class="rawtext">
+                        ...
+                    </div>
+                    </li>
+                }
+
+                <li>
+                    @Ajax.ActionLink(Model.TotalPages.ToString(),
+                        "Index",
+                        new {sortOrder = ViewBag.CurrentSort, page = Model.TotalPages, currentFilter = ViewBag.CurrentFilter},
+                        new AjaxOptions
+                        {
+                            UpdateTargetId = "customersList",
+                            InsertionMode = InsertionMode.Replace,
+                            HttpMethod = "GET"
+                        },
+                        new {@class = $"btn btn-defaul {nextDisabled} btn"})
+                </li>
+                <li>
+                    @Ajax.ActionLink("Next",
+                        "Index",
+                        new {sortOrder = ViewBag.CurrentSort, page = Model.PageIndex + 1, currentFilter = ViewBag.CurrentFilter},
+                        new AjaxOptions
+                        {
+                            UpdateTargetId = "customersList",
+                            InsertionMode = InsertionMode.Replace,
+                            HttpMethod = "GET"
+                        },
+                        new {@class = $"btn btn-default {nextDisabled} btn"})
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

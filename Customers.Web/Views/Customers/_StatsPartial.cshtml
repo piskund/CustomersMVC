@@ -1,0 +1,16 @@
+﻿@using Customers.Web.Models
+@model int
+
+<div id="statsTotal">
+    <div class="row" style="color: black; padding-right: 15px;">
+        <div class="col-md-9">
+            @Html.Raw("Total items")
+        </div>
+        <div class="col-md">
+            @Html.Label(Model.ToString())
+        </div>
+    </div>
+    <div class="row" style="background-color: #f7f7fa; height: 10px">
+        &nbsp;
+    </div>
+</div>
