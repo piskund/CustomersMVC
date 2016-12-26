@@ -71,7 +71,12 @@ namespace Customers.Web.Controllers
             IEnumerable<Customer> customers = customersProjection.AsEnumerable();
             if (!string.IsNullOrEmpty(searchString))
             {
-                customers = customers.Where(c => c.FullName.Contains(searchString));
+                customers = customers.Where(c => c.FirstName.Contains(searchString) ||
+                                                 c.LastName.Contains(searchString) || 
+                                                 c.Login.Contains(searchString) ||
+                                                 c.Email.Contains(searchString) ||
+                                                 c.PhoneNumber.Contains(searchString) ||
+                                                 Roles.GetRolesForUser(c.Login).Any(r => r.Contains(searchString)));
             }
             
             switch (sortOrder)
