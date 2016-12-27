@@ -41,7 +41,7 @@ namespace Customers.Web.Providers
 
             using (var db = new CustomerContext())
             {
-                var customer = new Customer()
+                var customer = new CustomerEntity()
                 {
                     Login = username,
                     Email = email,
@@ -117,7 +117,7 @@ namespace Customers.Web.Providers
             return result;
         }
 
-        private static MembershipUser MapCustomerToMemebershipUser(Customer customer)
+        private static MembershipUser MapCustomerToMemebershipUser(CustomerEntity customer)
         {
             return new MembershipUser(
                 providerName: nameof(CustomMembershipProvider),

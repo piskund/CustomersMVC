@@ -141,10 +141,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\HashedPasswordExtension.cs" />
-    <Compile Include="Models\Customer.cs" />
-    <Compile Include="Models\Customer.NotMapped.cs" />
+    <Compile Include="DAL\CustomerEntity.cs" />
+    <Compile Include="Models\CustomerCreateUpdateViewModel.cs" />
     <Compile Include="Models\CustomerInRole.cs" />
-    <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="Models\CustomerViewModel.cs" />
+    <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\RoleNames.cs" />
     <Compile Include="Models\PagedList.cs" />
@@ -153,9 +154,12 @@
     <Compile Include="Providers\CustomRoleProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Customers.mdf" />
+    <Content Include="App_Data\Customers.mdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="App_Data\Customers_log.ldf">
       <DependentUpon>Customers.mdf</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
@@ -198,7 +202,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Customers\Create.cshtml" />
-    <Content Include="Views\Customers\Delete.cshtml" />
     <Content Include="Views\Customers\Details.cshtml" />
     <Content Include="Views\Customers\Edit.cshtml" />
     <Content Include="Views\Customers\Index.cshtml" />

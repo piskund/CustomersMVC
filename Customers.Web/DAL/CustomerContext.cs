@@ -10,15 +10,15 @@ namespace Customers.Web.DAL
         {
         }
 
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerEntity> Customers { get; set; }
 
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<CustomerInRole> CustomersInRoles { get; set; }
 
-        public Customer FindCustomerByLoginOrEmail(string username)
+        public CustomerEntity FindCustomerByLoginOrEmail(string username)
         {
-            Customer result = null;
+            CustomerEntity result = null;
 
             if (this.Customers != null)
             {

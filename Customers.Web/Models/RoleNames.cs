@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Customers.Web.DAL;
 using WebGrease.Css.Extensions;
 
 namespace Customers.Web.Models
@@ -34,6 +35,19 @@ namespace Customers.Web.Models
         public static IEnumerable<string> GetAllRoles()
         {
             return GetRolesWithAcccessToSite().Concat(new [] { Customer });
+        }
+
+        public static int? GetRoleIdByName(string name)
+        {
+            int? result;
+
+            using (var context = new CustomerContext())
+            {
+                var roleRecord = context.Roles.FirstOrDefault(r => r.Name == name);
+                result = roleRecord?.Id;
+            }
+
+            return result;
         }
     }
 }
