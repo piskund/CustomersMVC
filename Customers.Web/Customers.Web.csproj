@@ -142,6 +142,7 @@
     </Compile>
     <Compile Include="Helpers\HashedPasswordExtension.cs" />
     <Compile Include="DAL\CustomerEntity.cs" />
+    <Compile Include="Helpers\HtmlHelpers.cs" />
     <Compile Include="Models\CustomerCreateUpdateViewModel.cs" />
     <Compile Include="Models\CustomerInRole.cs" />
     <Compile Include="Models\CustomerViewModel.cs" />

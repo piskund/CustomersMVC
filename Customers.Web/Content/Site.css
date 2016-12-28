@@ -31,11 +31,6 @@ table {
     height: 30px;
 }
 
-input.stats {
-    font-size: 14px;
-    color: green;
-}
-
 .mypager .row {
     background-color: lightgray;
     height: 30px;

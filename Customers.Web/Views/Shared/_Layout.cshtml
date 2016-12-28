@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Customers.Web.Helpers
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
@@ -25,8 +26,16 @@
                 @Html.Partial("_LoginPartial")
             </div>
             <ul class="nav nav-tabs">
-                <li active>@Html.ActionLink("Customers", "Index", "Customers")</li>
-                <li>@Html.ActionLink("Customer Roles", "Index", "CustomerRoles")</li>
+                <li class="@Html.IsActive("Customers", "Index")">
+                    <a href="@Url.Action("Index", "Customers")">
+                        Customers
+                    </a>
+                </li>
+                <li class="@Html.IsActive("CustomerRoles", "Index")">
+                    <a href="@Url.Action("Index", "CustomerRoles")">
+                        Customer Roles
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
