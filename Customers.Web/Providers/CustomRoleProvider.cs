@@ -36,7 +36,7 @@ namespace Customers.Web.Providers
 
         public override void CreateRole(string roleName)
         {
-            var newRole = new Role() { Name = roleName };
+            var newRole = new RoleEntity() { Name = roleName };
             using (var db = new CustomerContext())
             {
                 db.Roles.Add(newRole);
@@ -94,9 +94,25 @@ namespace Customers.Web.Providers
             }
         }
 
-        public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames)
+        public override void RemoveUsersFromRoles(string[] userNames, string[] roleNames)
         {
-            throw new System.NotImplementedException();
+            using (var db = new CustomerContext())
+            {
+                foreach (var username in userNames)
+                {
+                    foreach (var rolename in roleNames)
+                    {
+                        var user = db.Customers.FirstOrDefault(c => c.Login == username || c.Email == username);
+                        var role = db.Roles.FirstOrDefault(r => r.Name == rolename);
+                        if (user != null && role != null)
+                        {
+                            var customerInRole = db.CustomersInRoles.FirstOrDefault(cir => cir.CustomerId == user.Id && cir.RoleId == role.Id);
+                            db.CustomersInRoles.Remove(customerInRole);
+                        }
+                    }
+                }
+                db.SaveChanges();
+            }
         }
 
         public override string[] GetUsersInRole(string roleName)

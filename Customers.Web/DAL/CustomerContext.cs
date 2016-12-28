@@ -12,7 +12,7 @@ namespace Customers.Web.DAL
 
         public DbSet<CustomerEntity> Customers { get; set; }
 
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
 
         public DbSet<CustomerInRole> CustomersInRoles { get; set; }
 

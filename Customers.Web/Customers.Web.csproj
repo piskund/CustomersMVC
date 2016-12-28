@@ -146,7 +146,7 @@
     <Compile Include="Models\CustomerInRole.cs" />
     <Compile Include="Models\CustomerViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\Role.cs" />
+    <Compile Include="DAL\RoleEntity.cs" />
     <Compile Include="Models\RoleNames.cs" />
     <Compile Include="Models\PagedList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -26,7 +26,6 @@ namespace Customers.Web.Models
             Email = customer.Email;
             PhoneNumber = customer.PhoneNumber;
             Login = customer.Login;
-            Password = customer.Password;
             IsDisabled = customer.IsDisabled;
         }
 
@@ -44,20 +43,13 @@ namespace Customers.Web.Models
 
         [Display(Name = "Phone")]
         [StringLength(50)]
-        [RegularExpression(@"^[+]\d{1,3}\d{1,3}\d{4,8}$")]
+        [RegularExpression(@"^[+|.\d]\d{4,15}$", ErrorMessage = "Only plus sign and digits are allowed ")]
         public string PhoneNumber { get; set; }
 
         [Required]
         [StringLength(15, MinimumLength = 4, ErrorMessage = "Login must contains from 4 to 15 symbols")]
         [RegularExpression(@"[A-Za-z0-9\\._]{4,15}", ErrorMessage = "Wrong login format")]
         public string Login { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        [StringLength(12, MinimumLength = 6, ErrorMessage = "Password must contains from 6 to 12 symbols")]
-        // Validation at least 1 lowercase, 1 uppercase, 1 number and 1 special character. 
-        [RegularExpression(@"^.*(?=.*[a - z])(?=.*[A - Z])(?=.*\d)(?=.*[@#$%&_\\.]).*$", ErrorMessage = "Wrong password format")]
-        public string Password { get; set; }
 
         public bool IsDisabled { get; set; }
 
@@ -88,7 +80,6 @@ namespace Customers.Web.Models
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Login = model.Login,
-                Password = model.Password,
                 IsDisabled = model.IsDisabled,
             };
         }

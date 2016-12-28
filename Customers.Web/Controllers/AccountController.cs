@@ -23,7 +23,7 @@ namespace Customers.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginViewModel model, string returnUrl, string errorMessage)
         {
-            if (!RoleNames.GetRolesWithAcccessToSite().Any(r =>  Roles.GetRolesForUser(model.Login).Contains(r) ))
+            if (!RoleNames.GetRoleNamesWithAcccessToSite().Any(r =>  Roles.GetRolesForUser(model.Login).Contains(r) ))
             {
                 ModelState.AddModelError("", "Your current role(s) has no access to this site.");
                 FormsAuthentication.SignOut();

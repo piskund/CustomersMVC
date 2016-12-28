@@ -1,6 +1,6 @@
-﻿namespace Customers.Web.Models
+﻿namespace Customers.Web.DAL
 {
-    public class Role
+    public class RoleEntity
     {
         public int Id { get; set; }
 

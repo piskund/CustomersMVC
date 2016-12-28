@@ -2,7 +2,6 @@
 using System.Web.Security;
 using Customers.Web.DAL;
 using Customers.Web.Helpers;
-using Customers.Web.Models;
 
 namespace Customers.Web.Providers
 {

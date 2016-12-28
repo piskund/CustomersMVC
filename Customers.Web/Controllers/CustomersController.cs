@@ -20,7 +20,7 @@ namespace Customers.Web.Controllers
             string searchString,
             int? page)
         {
-            if (!RoleNames.GetRolesWithAcccessToSite().Any(r => User.IsInRole(r)))
+            if (!RoleNames.GetRoleNamesWithAcccessToSite().Any(r => User.IsInRole(r)))
             {
                 FormsAuthentication.SignOut();
                 return RedirectToAction("Login", "Account");
@@ -184,12 +184,30 @@ namespace Customers.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsActive,CustomerRoles")] CustomerCreateUpdateViewModel customer, int[] roleId)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,ConfirmPassword,OldHashedPassword,IsActive,InititallySelectedRoles")] CustomerCreateUpdateViewModel customer, 
+           int[] roleId)
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(customer).State = EntityState.Modified;
+                var customerEntity = (CustomerEntity)customer;
+                _db.Entry(customerEntity).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
+
+                // Updating roles
+                var selectedRoleNames = roleId.Select(id => _db.Roles.Find(id).Name);
+
+                var notSelectedNamesInRole = RoleNames.GetAllRoleNames().Except(selectedRoleNames).Where(roleName => Roles.IsUserInRole(customer.Login, roleName)).ToArray();
+                if (notSelectedNamesInRole.Length > 0)
+                {
+                    Roles.RemoveUserFromRoles(customer.Login, notSelectedNamesInRole);
+                }
+
+                var selectedNamesNotInRole = selectedRoleNames.Where(roleName => !Roles.IsUserInRole(customer.Login, roleName)).ToArray();
+                if (selectedNamesNotInRole.Length > 0)
+                {
+                    Roles.AddUserToRoles(customer.Login, selectedNamesNotInRole);
+                }
+
                 return RedirectToAction("Index");
             }
 

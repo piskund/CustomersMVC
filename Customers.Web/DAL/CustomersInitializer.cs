@@ -78,7 +78,7 @@ namespace Customers.Web.DAL
             }
 
             // Fill roles table.
-            RoleNames.GetAllRoles().ForEach(Roles.CreateRole);
+            RoleNames.GetAllRoleNames().ForEach(Roles.CreateRole);
 
             // Set initial fake roles to customers.
             var allCustomers = customers.Select(c => c.Login).ToArray();
