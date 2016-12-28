@@ -1,11 +1,10 @@
-﻿@model Customers.Web.Models.PagedList<Customers.Web.Models.Customer>
+﻿@using Customers.Web.Models
+@model PagedList<CustomerViewModel>
 
 <div id="customersList">
     @{
         var currentStats = Model.Stats;
     }
-
-    @Scripts.Render("~/scripts/jquery.custom.js")
 
     <script type="text/javascript">
         function updateTotal() {
@@ -21,3 +20,5 @@
 
     Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages
 </div>
+
+@Scripts.Render("~/scripts/jquery.custom.js")

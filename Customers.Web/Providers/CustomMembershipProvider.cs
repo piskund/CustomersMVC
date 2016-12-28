@@ -2,12 +2,30 @@
 using System.Web.Security;
 using Customers.Web.DAL;
 using Customers.Web.Helpers;
-using Customers.Web.Models;
 
 namespace Customers.Web.Providers
 {
     public class CustomMembershipProvider : MembershipProvider
     {
+        public MembershipUser CreateUser(CustomerEntity customer, out MembershipCreateStatus status)
+        {
+            MembershipUser result = null;
+
+            if (!IsUserInvalid(customer.Login, customer.Password, customer.Email, out status))
+            {
+                using (var db = new CustomerContext())
+                {
+                    customer.Password = customer.Password.GetMd5Hash();
+                    db.Customers.Add(customer);
+                    db.SaveChanges();
+                }
+
+                result = GetUser(customer.Login, true);
+            }
+
+            return result;
+        }
+
         public override MembershipUser CreateUser(
             string username, string password, 
             string email, string passwordQuestion, 
@@ -15,19 +33,33 @@ namespace Customers.Web.Providers
             object providerUserKey, 
             out MembershipCreateStatus status)
         {
+            var customer = new CustomerEntity()
+            {
+                Login = username,
+                Email = email,
+                Password = password
+            };
+
+            return CreateUser(customer, out status);
+        }
+
+        private bool IsUserInvalid(string username, string password, string email, out MembershipCreateStatus status)
+        {
+            status = MembershipCreateStatus.Success;
+
             var args = new ValidatePasswordEventArgs(username, password, true);
             OnValidatingPassword(args);
 
             if (args.Cancel)
             {
                 status = MembershipCreateStatus.InvalidPassword;
-                return null;
+                return true;
             }
 
             if (RequiresUniqueEmail && !string.IsNullOrEmpty(GetUserNameByEmail(email)))
             {
                 status = MembershipCreateStatus.DuplicateEmail;
-                return null;
+                return true;
             }
 
             MembershipUser user = GetUser(username, true);
@@ -36,24 +68,9 @@ namespace Customers.Web.Providers
             {
                 // User has already exists in db.
                 status = MembershipCreateStatus.DuplicateUserName;
-                return null;
+                return true;
             }
-
-            using (var db = new CustomerContext())
-            {
-                var customer = new Customer()
-                {
-                    Login = username,
-                    Email = email,
-                    Password = password.GetMd5Hash()
-                };
-                db.Customers.Add(customer);
-                db.SaveChanges();
-            }
-
-            status = MembershipCreateStatus.Success;
-
-            return GetUser(username, true);
+            return false;
         }
 
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion,
@@ -117,7 +134,7 @@ namespace Customers.Web.Providers
             return result;
         }
 
-        private static MembershipUser MapCustomerToMemebershipUser(Customer customer)
+        private static MembershipUser MapCustomerToMemebershipUser(CustomerEntity customer)
         {
             return new MembershipUser(
                 providerName: nameof(CustomMembershipProvider),

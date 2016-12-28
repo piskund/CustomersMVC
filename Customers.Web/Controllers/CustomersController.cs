@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Customers.Web.DAL;
 using Customers.Web.Models;
-using System.Collections.Generic;
 using System.Web.Security;
+using Customers.Web.Providers;
 
 namespace Customers.Web.Controllers
 {
@@ -16,18 +16,18 @@ namespace Customers.Web.Controllers
         private readonly CustomerContext _db = new CustomerContext();
 
         // GET: Customers
-        public async Task<ActionResult> Index(string sortOrder, 
+        public ActionResult Index(string sortOrder,
             string currentFilter,
             string searchString,
             int? page)
         {
-            if (!RoleNames.GetRolesWithAcccessToSite().Any(r => User.IsInRole(r)))
+            if (!RoleNames.GetRoleNamesWithAcccessToSite().Any(r => User.IsInRole(r)))
             {
                 FormsAuthentication.SignOut();
                 return RedirectToAction("Login", "Account");
             }
 
-            var customersProjection = _db.Customers.Select(c => c);
+            var customers = _db.Customers.Select(c => c).AsEnumerable();
 
             // Parse page size parameter from config.
             var pageSizeFromConfig = ConfigurationManager.AppSettings["PagedListPageSize"];
@@ -62,50 +62,59 @@ namespace Customers.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            // Http-request (no sorting/filtering needed)
-            if (!Request.IsAjaxRequest())
+            // Ajax-request 
+            if (Request.IsAjaxRequest())
             {
-                return View(await PagedList<Customer>.CreateAsync(customersProjection, 1, pageSize, numOfButtons));
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    customers = customers.Where(c => c.FirstName.Contains(searchString) ||
+                                                     c.LastName.Contains(searchString) ||
+                                                     c.Login.Contains(searchString) ||
+                                                     c.Email.Contains(searchString) ||
+                                                     c.PhoneNumber.Contains(searchString) ||
+                                                     Roles.GetRolesForUser(c.Login).Any(r => r.Contains(searchString)));
+                }
+
+                switch (sortOrder)
+                {
+                    case "name":
+                        customers = customers.OrderBy(c => c.FirstName + c.LastName);
+                        break;
+                    case "name_desc":
+                        customers = customers.OrderByDescending(c => c.FirstName + c.LastName);
+                        break;
+                    case "login":
+                        customers = customers.OrderBy(c => c.Login);
+                        break;
+                    case "login_desc":
+                        customers = customers.OrderByDescending(c => c.Login);
+                        break;
+                    case "email":
+                        customers = customers.OrderBy(c => c.Email);
+                        break;
+                    case "email_desc":
+                        customers = customers.OrderByDescending(c => c.Email);
+                        break;
+                    case "phone":
+                        customers = customers.OrderBy(c => c.PhoneNumber);
+                        break;
+                    case "phone_desc":
+                        customers = customers.OrderByDescending(c => c.PhoneNumber);
+                        break;
+                }
             }
 
-            IEnumerable<Customer> customers = customersProjection.AsEnumerable();
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                customers = customers.Where(c => c.FullName.Contains(searchString));
-            }
-            
-            switch (sortOrder)
-            {
-                case "name":
-                    customers = customers.OrderBy(c => c.FullName);
-                    break;
-                case "name_desc":
-                    customers = customers.OrderByDescending(c => c.FullName);
-                    break;
-                case "login":
-                    customers = customers.OrderBy(c => c.Login);
-                    break;
-                case "login_desc":
-                    customers = customers.OrderByDescending(c => c.Login);
-                    break;
-                case "email":
-                    customers = customers.OrderBy(c => c.Email);
-                    break;
-                case "email_desc":
-                    customers = customers.OrderByDescending(c => c.Email);
-                    break;
-                case "phone":
-                    customers = customers.OrderBy(c => c.PhoneNumber);
-                    break;
-                case "phone_desc":
-                    customers = customers.OrderByDescending(c => c.PhoneNumber);
-                    break;
-            }
-
-            var model = PagedList<Customer>.Create(customers, page ?? 1, pageSize, numOfButtons);
+            var model = PagedList<CustomerViewModel>.Create(customers.Select(c => (CustomerViewModel)c), page ?? 1, pageSize, numOfButtons);
             model.CurrentFilter = searchString;
 
-            return PartialView("_CustomersListPartial", model);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_CustomersListPartial", model);
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         public ActionResult Stats(int? currentStats)
@@ -121,7 +130,7 @@ namespace Customers.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = await _db.Customers.FindAsync(id);
+            var customer = (CustomerViewModel)await _db.Customers.FindAsync(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -133,7 +142,7 @@ namespace Customers.Web.Controllers
         [Authorize(Roles = RoleNames.AllowedToModify)]
         public ActionResult Create()
         {
-            return View();
+            return View(new CustomerCreateUpdateViewModel());
         }
 
         // POST: Customers/Create
@@ -142,13 +151,31 @@ namespace Customers.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public async Task<ActionResult> Create([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
+        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,ConfirmPassword,IsDisabled")] CustomerCreateUpdateViewModel customer,
+             int[] roleId)
         {
+            if (roleId == null || roleId.Length < 1)
+            {
+                ModelState.AddModelError("RolesList","At least one role must be selected.");
+            }
             if (ModelState.IsValid)
             {
-                _db.Customers.Add(customer);
-                await _db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                MembershipCreateStatus status;
+                // Create customer as application user.
+                ((CustomMembershipProvider)Membership.Provider).CreateUser((CustomerEntity)customer, out status);
+
+                if (status != MembershipCreateStatus.Success)
+                {
+                    ModelState.AddModelError(string.Empty, status.ToString());
+                }
+                else
+                {
+                    // Creating roles
+                    var selectedRoleNames = roleId.Select(id => _db.Roles.Find(id).Name).ToArray();
+                    Roles.AddUserToRoles(customer.Login, selectedRoleNames);
+
+                    return RedirectToAction("Index");
+                }
             }
 
             return View(customer);
@@ -162,7 +189,7 @@ namespace Customers.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = await _db.Customers.FindAsync(id);
+            var customer = (CustomerCreateUpdateViewModel)await _db.Customers.FindAsync(id);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -176,19 +203,34 @@ namespace Customers.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] Customer customer)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,ConfirmPassword,OldHashedPassword,IsActive,InititallySelectedRoles")] CustomerCreateUpdateViewModel customer, 
+           int[] roleId)
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(customer).State = EntityState.Modified;
+                var customerEntity = (CustomerEntity)customer;
+                _db.Entry(customerEntity).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
+
+                // Updating roles
+                var selectedRoleNames = roleId.Select(id => _db.Roles.Find(id).Name);
+
+                var notSelectedNamesInRole = RoleNames.GetAllRoleNames().Except(selectedRoleNames).Where(roleName => Roles.IsUserInRole(customer.Login, roleName)).ToArray();
+                if (notSelectedNamesInRole.Length > 0)
+                {
+                    Roles.RemoveUserFromRoles(customer.Login, notSelectedNamesInRole);
+                }
+
+                var selectedNamesNotInRole = selectedRoleNames.Where(roleName => !Roles.IsUserInRole(customer.Login, roleName)).ToArray();
+                if (selectedNamesNotInRole.Length > 0)
+                {
+                    Roles.AddUserToRoles(customer.Login, selectedNamesNotInRole);
+                }
+
                 return RedirectToAction("Index");
             }
-            var customers = _db.Customers.Select(c => c);
-            var model = PagedList<Customer>.Create(customers, 1, 10, 5);
-            model.CurrentFilter = string.Empty;
 
-            return PartialView("_CustomersListPartial", model);
+            return View(customer);
         }
 
         // GET: Customers/Delete/5
@@ -196,7 +238,7 @@ namespace Customers.Web.Controllers
         [AcceptVerbs(HttpVerbs.Delete)]
         public ActionResult Delete(int? id, string sortOrder)
         {
-            Customer customer = _db.Customers.Find(id);
+            var customer = _db.Customers.Find(id);
             _db.Customers.Remove(customer);
             _db.SaveChanges();
 
