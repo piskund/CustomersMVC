@@ -6,6 +6,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web.Security;
 using Customers.Web.Models;
+using Customers.Web.Providers;
 using WebGrease.Css.Extensions;
 
 namespace Customers.Web.DAL
@@ -52,13 +53,9 @@ namespace Customers.Web.DAL
                 customers.ForEach(c => c.PhoneNumber = phoneNumber++.ToString());
                 customers.ForEach(c => c.IsDisabled = c.Login.Contains("d"));
 
+                MembershipCreateStatus status;
                 // Create customer as application user.
-                customers.ForEach(c => Membership.CreateUser(c.Login, c.Password, c.Email));
-                // Update password to hash instead of plain value.
-                context.Customers.ForEach(
-                    c => customers.Find(contextCust => contextCust.Login == c.Login).Password = c.Password);
-                // Update customer conext with extended data.
-                context.Customers.AddOrUpdate(contextCust => contextCust.Login, customers.ToArray());
+                customers.ForEach(c => ((CustomMembershipProvider)Membership.Provider).CreateUser(c, out status));
                 context.SaveChanges();
             }
             catch (DbEntityValidationException ve)

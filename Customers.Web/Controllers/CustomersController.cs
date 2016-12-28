@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Customers.Web.DAL;
 using Customers.Web.Models;
 using System.Web.Security;
+using Customers.Web.Providers;
 
 namespace Customers.Web.Controllers
 {
@@ -141,7 +142,7 @@ namespace Customers.Web.Controllers
         [Authorize(Roles = RoleNames.AllowedToModify)]
         public ActionResult Create()
         {
-            return View();
+            return View(new CustomerCreateUpdateViewModel());
         }
 
         // POST: Customers/Create
@@ -150,13 +151,31 @@ namespace Customers.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.AllowedToModify)]
-        public async Task<ActionResult> Create([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,IsDisabled")] CustomerCreateUpdateViewModel customer)
+        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,Email,PhoneNumber,Login,Password,ConfirmPassword,IsDisabled")] CustomerCreateUpdateViewModel customer,
+             int[] roleId)
         {
+            if (roleId == null || roleId.Length < 1)
+            {
+                ModelState.AddModelError("RolesList","At least one role must be selected.");
+            }
             if (ModelState.IsValid)
             {
-                _db.Customers.Add((CustomerEntity)customer);
-                await _db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                MembershipCreateStatus status;
+                // Create customer as application user.
+                ((CustomMembershipProvider)Membership.Provider).CreateUser((CustomerEntity)customer, out status);
+
+                if (status != MembershipCreateStatus.Success)
+                {
+                    ModelState.AddModelError(string.Empty, status.ToString());
+                }
+                else
+                {
+                    // Creating roles
+                    var selectedRoleNames = roleId.Select(id => _db.Roles.Find(id).Name).ToArray();
+                    Roles.AddUserToRoles(customer.Login, selectedRoleNames);
+
+                    return RedirectToAction("Index");
+                }
             }
 
             return View(customer);

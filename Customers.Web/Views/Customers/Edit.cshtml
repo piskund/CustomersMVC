@@ -73,7 +73,6 @@
         <div class="form-group">
             @Html.LabelFor(model => model.RolesList, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @*@Html.ListBoxFor(model => model.RoleId, Model.RolesList, new { htmlAttributes = new { @class = "form-control" } })*@
                 @Html.ListBox("RoleId", Model.RolesList, new {htmlAttributes = new {@class = "form-control", multiple = "multiple"}})
                 @Html.ValidationMessageFor(model => model.RolesList, "", new {@class = "text-danger"})
             </div>

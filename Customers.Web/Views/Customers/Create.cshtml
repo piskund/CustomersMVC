@@ -70,10 +70,10 @@
         </div>
         
         <div class="form-group">
-            @Html.LabelFor(model => model.CustomerRoles, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.RolesList, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.CustomerRoles, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CustomerRoles, "", new { @class = "text-danger" })
+                @Html.ListBox("RoleId", Model.RolesList, new { htmlAttributes = new { @class = "form-control", multiple = "multiple" } })
+                @Html.ValidationMessageFor(model => model.RolesList, "", new { @class = "text-danger" })
             </div>
         </div>
 

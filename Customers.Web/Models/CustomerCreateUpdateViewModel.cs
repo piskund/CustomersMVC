@@ -14,7 +14,14 @@ namespace Customers.Web.Models
         private string _password;
 
         public CustomerCreateUpdateViewModel()
-        { }
+        {
+            var allRoles = RoleNames.GetAllRoleNames().Select(r => new {
+                RoleId = RoleNames.GetRoleIdByName(r),
+                RoleName = r
+            }).ToList();
+
+            RolesList = new MultiSelectList(allRoles, "RoleId", "RoleName", new int[] {});
+        }
 
         public CustomerCreateUpdateViewModel(CustomerEntity customer) : base(customer)
         {
