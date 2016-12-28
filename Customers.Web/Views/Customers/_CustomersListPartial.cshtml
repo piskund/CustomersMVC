@@ -6,8 +6,6 @@
         var currentStats = Model.Stats;
     }
 
-    @Scripts.Render("~/scripts/jquery.custom.js")
-
     <script type="text/javascript">
         function updateTotal() {
             $('#statsTotal').load('@Url.Action("Stats", "Customers")?currentStats=' + @currentStats);
@@ -22,3 +20,5 @@
 
     Page @(Model.TotalPages < Model.PageIndex ? 0 : Model.PageIndex) of @Model.TotalPages
 </div>
+
+@Scripts.Render("~/scripts/jquery.custom.js")
